@@ -1,12 +1,12 @@
 import { Image } from 'expo-image';
+import { router } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { ItemEditor } from '@/components/item-editor';
 import { Brand, Colors, ContentTypeColors, Spacing } from '@/constants/theme';
-import { useLibrary, type LibraryItem } from '@/hooks/use-library';
+import { useLibrary } from '@/hooks/use-library';
 import { useSession } from '@/store/session';
 import type { ContentType } from '@/types/models';
 
@@ -19,7 +19,6 @@ export default function LibraryScreen() {
   const userId = useSession((s) => s.session?.user.id);
   const { data: items = [] } = useLibrary(userId);
   const [filter, setFilter] = useState<Filter>('all');
-  const [selected, setSelected] = useState<LibraryItem | null>(null);
 
   // Only offer filters for types actually present in the library.
   const presentTypes = useMemo(() => {
@@ -69,7 +68,7 @@ export default function LibraryScreen() {
               : 0;
           return (
             <Pressable
-              onPress={() => setSelected(item)}
+              onPress={() => router.push({ pathname: '/content/[id]', params: { id: item.id } })}
               style={[styles.row, { backgroundColor: c.backgroundElement }]}>
               <Image
                 source={item.content?.cover_url}
@@ -100,10 +99,6 @@ export default function LibraryScreen() {
           );
         }}
       />
-
-      {selected ? (
-        <ItemEditor key={selected.id} item={selected} onClose={() => setSelected(null)} />
-      ) : null}
     </SafeAreaView>
   );
 }

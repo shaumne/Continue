@@ -1,16 +1,14 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
-import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { HeroNight } from '@/components/hero-night';
-import { ItemEditor } from '@/components/item-editor';
 import { TypeBadge } from '@/components/type-badge';
 import { Brand, Colors, ContentTypeColors, Spacing } from '@/constants/theme';
-import { useLibrary, type LibraryItem } from '@/hooks/use-library';
+import { useLibrary } from '@/hooks/use-library';
 import { useProfile } from '@/hooks/use-profile';
 import { formatDuration } from '@/lib/format';
 import { useSession } from '@/store/session';
@@ -27,7 +25,6 @@ export default function HomeScreen() {
 
   const { data: items = [] } = useLibrary(userId);
   const { data: profile } = useProfile(userId);
-  const [selected, setSelected] = useState<LibraryItem | null>(null);
 
   const continueItems = items.filter((i) => IN_PROGRESS.has(i.status));
   const budget = profile?.daily_time_budget_minutes ?? null;
@@ -35,7 +32,8 @@ export default function HomeScreen() {
   function decide() {
     const pool = continueItems.length ? continueItems : items;
     if (!pool.length) return;
-    setSelected(pool[Math.floor(Math.random() * pool.length)]);
+    const pick = pool[Math.floor(Math.random() * pool.length)];
+    router.push({ pathname: '/content/[id]', params: { id: pick.id } });
   }
 
   return (
@@ -86,7 +84,7 @@ export default function HomeScreen() {
           const barColor = type ? ContentTypeColors[type] : Brand.primary;
           return (
             <Pressable
-              onPress={() => setSelected(item)}
+              onPress={() => router.push({ pathname: '/content/[id]', params: { id: item.id } })}
               style={[styles.card, { backgroundColor: c.backgroundElement }]}>
               <Image
                 source={item.content?.cover_url}
@@ -121,10 +119,6 @@ export default function HomeScreen() {
           );
         }}
       />
-
-      {selected ? (
-        <ItemEditor key={selected.id} item={selected} onClose={() => setSelected(null)} />
-      ) : null}
     </SafeAreaView>
   );
 }

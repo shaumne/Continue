@@ -50,6 +50,8 @@ export default function AppTabs() {
       />
       {/* Add Content is reached via a button, not shown as a tab. */}
       <Tabs.Screen name="explore" options={{ href: null }} />
+      {/* Detail is a pushed full-page route, not a tab. */}
+      <Tabs.Screen name="content/[id]" options={{ href: null }} />
     </Tabs>
   );
 }
