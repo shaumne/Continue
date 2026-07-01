@@ -33,7 +33,7 @@ export function ItemEditor({
 }) {
   const { t } = useTranslation();
   const scheme = useColorScheme();
-  const c = Colors[scheme === 'unspecified' ? 'dark' : scheme];
+  const c = Colors[scheme];
 
   const [status, setStatus] = useState<ItemStatus>(item?.status ?? 'backlog');
   const [current, setCurrent] = useState(item?.progress_current?.toString() ?? '');

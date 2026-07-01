@@ -13,7 +13,7 @@ import { useSession } from '@/store/session';
 export default function HomeScreen() {
   const { t } = useTranslation();
   const scheme = useColorScheme();
-  const c = Colors[scheme === 'unspecified' ? 'dark' : scheme];
+  const c = Colors[scheme];
 
   const signOut = useSession((s) => s.signOut);
   const email = useSession((s) => s.session?.user.email ?? '');

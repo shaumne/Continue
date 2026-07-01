@@ -21,7 +21,7 @@ type Mode = 'login' | 'register';
 export function AuthScreen() {
   const { t } = useTranslation();
   const scheme = useColorScheme();
-  const c = Colors[scheme === 'unspecified' ? 'dark' : scheme];
+  const c = Colors[scheme];
 
   const signIn = useSession((s) => s.signIn);
   const signUp = useSession((s) => s.signUp);

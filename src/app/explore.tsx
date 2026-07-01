@@ -29,7 +29,7 @@ const TYPES: ContentType[] = ['movie', 'tv'];
 export default function SearchScreen() {
   const { t } = useTranslation();
   const scheme = useColorScheme();
-  const c = Colors[scheme === 'unspecified' ? 'dark' : scheme];
+  const c = Colors[scheme];
 
   const userId = useSession((s) => s.session?.user.id);
   const locale = useLanguage((s) => toProviderLocale(s.resolved));
