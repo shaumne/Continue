@@ -1,3 +1,5 @@
+import { Ionicons } from '@expo/vector-icons';
+import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -70,6 +72,18 @@ export default function ProfileScreen() {
           <Stat label={t('profile.completed')} value={completed} color={Brand.success} c={c} />
         </View>
 
+        <Pressable
+          onPress={() => router.push('/achievements')}
+          accessibilityRole="button"
+          accessibilityLabel={t('achievements.title')}
+          style={[styles.achievementsRow, { backgroundColor: c.backgroundElement }]}>
+          <Ionicons name="trophy" size={20} color={Brand.xp} />
+          <Text style={[styles.achievementsRowText, { color: c.text }]}>
+            {t('achievements.title')}
+          </Text>
+          <Ionicons name="chevron-forward" size={18} color={c.textSecondary} />
+        </Pressable>
+
         <Text style={[styles.sectionLabel, { color: c.textSecondary }]}>
           {t('settings.language')}
         </Text>
@@ -136,6 +150,15 @@ const styles = StyleSheet.create({
   xpFill: { height: 8, borderRadius: 4 },
   xpText: { fontSize: 12 },
   stats: { flexDirection: 'row', gap: Spacing.two, marginTop: Spacing.two },
+  achievementsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.two,
+    borderRadius: 12,
+    padding: Spacing.three,
+    marginTop: Spacing.two,
+  },
+  achievementsRowText: { flex: 1, fontSize: 15, fontWeight: '600' },
   stat: { flex: 1, borderRadius: 12, padding: Spacing.three, alignItems: 'center', gap: 2 },
   statValue: { fontSize: 22, fontWeight: '700' },
   statLabel: { fontSize: 12 },
