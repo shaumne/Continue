@@ -23,7 +23,8 @@
     "continueTitle": "Kaldığın Yerden Devam Et",
     "notSure": "Ne yapacağını bilemedin mi?",
     "notSureHint": "Vaktine göre öneri al",
-    "letsDecide": "Karar Verelim"
+    "letsDecide": "Karar Verelim",
+    "emptyHint": "Başlamak için Add Content sekmesinden bir şey ekle."
   },
   "addContent": {
     "title": "İçerik Ekle",

@@ -1,55 +1,116 @@
+import { Image } from 'expo-image';
 import { useTranslation } from 'react-i18next';
-import { Pressable, StyleSheet, Text } from 'react-native';
+import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Brand, BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
+import { Brand, Colors, ContentTypeColors, Spacing } from '@/constants/theme';
+import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useLibrary } from '@/hooks/use-library';
 import { useSession } from '@/store/session';
 
 export default function HomeScreen() {
   const { t } = useTranslation();
+  const scheme = useColorScheme();
+  const c = Colors[scheme === 'unspecified' ? 'dark' : scheme];
+
   const signOut = useSession((s) => s.signOut);
   const email = useSession((s) => s.session?.user.email ?? '');
+  const userId = useSession((s) => s.session?.user.id);
   const name = email.split('@')[0] || 'there';
 
-  return (
-    <ThemedView style={styles.container}>
-      <SafeAreaView style={styles.safeArea}>
-        <ThemedText type="title">{t('home.greeting', { name })}</ThemedText>
-        <ThemedText type="subtitle">{email}</ThemedText>
+  const { data: items = [] } = useLibrary(userId);
 
-        <Pressable
-          onPress={signOut}
-          style={[styles.signOut, { borderColor: Brand.primary }]}>
-          <Text style={[styles.signOutText, { color: Brand.primary }]}>
-            {t('auth.signOut')}
+  return (
+    <SafeAreaView style={[styles.safe, { backgroundColor: c.background }]}>
+      <View style={styles.header}>
+        <View style={styles.flex}>
+          <Text style={[styles.greeting, { color: c.text }]} numberOfLines={1}>
+            {t('home.greeting', { name })}
           </Text>
+          <Text style={[styles.email, { color: c.textSecondary }]} numberOfLines={1}>
+            {email}
+          </Text>
+        </View>
+        <Pressable onPress={signOut} hitSlop={8}>
+          <Text style={[styles.signOut, { color: Brand.primary }]}>{t('auth.signOut')}</Text>
         </Pressable>
-      </SafeAreaView>
-    </ThemedView>
+      </View>
+
+      <Text style={[styles.section, { color: c.text }]}>{t('home.continueTitle')}</Text>
+
+      <FlatList
+        data={items}
+        keyExtractor={(item) => item.id}
+        contentContainerStyle={styles.list}
+        ListEmptyComponent={
+          <Text style={[styles.empty, { color: c.textSecondary }]}>{t('home.emptyHint')}</Text>
+        }
+        renderItem={({ item }) => {
+          const type = item.content?.type;
+          const progress =
+            item.progress_total && item.progress_current != null
+              ? item.progress_current / item.progress_total
+              : 0;
+          return (
+            <View style={[styles.row, { backgroundColor: c.backgroundElement }]}>
+              <Image
+                source={item.content?.cover_url}
+                style={styles.cover}
+                contentFit="cover"
+                transition={150}
+              />
+              <View style={styles.flex}>
+                <Text style={[styles.title, { color: c.text }]} numberOfLines={1}>
+                  {item.content?.title ?? '—'}
+                </Text>
+                <Text style={[styles.status, { color: c.textSecondary }]}>
+                  {t(`status.${item.status}`)}
+                </Text>
+                <View style={[styles.track, { backgroundColor: c.backgroundSelected }]}>
+                  <View
+                    style={[
+                      styles.fill,
+                      {
+                        width: `${Math.round(progress * 100)}%`,
+                        backgroundColor: type ? ContentTypeColors[type] : Brand.primary,
+                      },
+                    ]}
+                  />
+                </View>
+              </View>
+            </View>
+          );
+        }}
+      />
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1 },
-  safeArea: {
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    paddingTop: Spacing.five,
+  safe: { flex: 1, paddingHorizontal: Spacing.four },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: Spacing.three,
     gap: Spacing.three,
-    paddingBottom: BottomTabInset + Spacing.three,
-    maxWidth: MaxContentWidth,
-    alignSelf: 'center',
-    width: '100%',
   },
-  signOut: {
-    marginTop: Spacing.four,
-    alignSelf: 'flex-start',
-    borderWidth: 1,
+  flex: { flex: 1 },
+  greeting: { fontSize: 22, fontWeight: '700' },
+  email: { fontSize: 13, marginTop: 2 },
+  signOut: { fontSize: 14, fontWeight: '600' },
+  section: { fontSize: 17, fontWeight: '600', marginTop: Spacing.four },
+  list: { paddingVertical: Spacing.three, gap: Spacing.two },
+  empty: { fontSize: 14, textAlign: 'center', paddingTop: Spacing.five },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
     borderRadius: 12,
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.two,
+    padding: Spacing.two,
+    gap: Spacing.three,
   },
-  signOutText: { fontSize: 15, fontWeight: '600' },
+  cover: { width: 46, height: 66, borderRadius: 6, backgroundColor: '#0003' },
+  title: { fontSize: 15, fontWeight: '600' },
+  status: { fontSize: 12, marginTop: 2, marginBottom: Spacing.one },
+  track: { height: 4, borderRadius: 2, overflow: 'hidden' },
+  fill: { height: 4, borderRadius: 2 },
 });

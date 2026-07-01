@@ -23,7 +23,8 @@
     "continueTitle": "Continue Where You Left Off",
     "notSure": "Not sure what to do?",
     "notSureHint": "Get a suggestion based on your time",
-    "letsDecide": "Let's Decide"
+    "letsDecide": "Let's Decide",
+    "emptyHint": "Add something from the Add Content tab to get started."
   },
   "addContent": {
     "title": "Add Content",

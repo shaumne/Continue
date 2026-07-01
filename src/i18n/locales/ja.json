@@ -23,7 +23,8 @@
     "continueTitle": "続きから再開",
     "notSure": "何をするか迷っていますか？",
     "notSureHint": "空き時間に合わせて提案します",
-    "letsDecide": "決めましょう"
+    "letsDecide": "決めましょう",
+    "emptyHint": "「コンテンツを追加」タブから追加して始めましょう。"
   },
   "addContent": {
     "title": "コンテンツを追加",

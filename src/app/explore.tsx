@@ -15,6 +15,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { searchCatalog } from '@/api/catalog';
 import { addToLibrary } from '@/api/library';
+import { queryClient } from '@/lib/query-client';
 import { Brand, Colors, ContentTypeColors, Spacing } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { toProviderLocale } from '@/i18n';
@@ -47,7 +48,10 @@ export default function SearchScreen() {
   async function onAdd(id: string) {
     if (!userId) return;
     const { error } = await addToLibrary(userId, id);
-    if (!error) setAdded((prev) => new Set(prev).add(id));
+    if (!error) {
+      setAdded((prev) => new Set(prev).add(id));
+      queryClient.invalidateQueries({ queryKey: ['library'] });
+    }
   }
 
   return (
