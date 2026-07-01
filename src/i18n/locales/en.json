@@ -59,10 +59,18 @@
     "dropped": "Dropped"
   },
   "detail": {
+    "back": "Back",
+    "notFound": "Item not found",
     "statusLabel": "Status",
     "progressLabel": "Progress",
     "current": "Current",
     "total": "Total",
+    "aboutTitle": "About",
+    "platform": "Platform",
+    "timeSpent": "Time spent",
+    "rating": "Rating",
+    "notes": "Notes",
+    "editTitle": "Update progress",
     "close": "Close"
   },
   "contentType": {
@@ -93,5 +101,14 @@
   "settings": {
     "language": "Language",
     "systemDefault": "System default"
+  },
+  "stats": {
+    "byType": "By Type",
+    "items": "items",
+    "inProgress": "In Progress",
+    "emptyHint": "Add something to your library to see stats here.",
+    "xpToNextLevel": "{{xp}} XP to next level",
+    "byTypeA11y": "{{count}} items by type",
+    "levelProgressA11y": "Level {{level}}, {{percent}}% to next level"
   }
 }

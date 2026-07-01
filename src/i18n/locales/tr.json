@@ -59,10 +59,18 @@
     "dropped": "Bırakıldı"
   },
   "detail": {
+    "back": "Geri",
+    "notFound": "İçerik bulunamadı",
     "statusLabel": "Durum",
     "progressLabel": "İlerleme",
     "current": "Şu an",
     "total": "Toplam",
+    "aboutTitle": "Hakkında",
+    "platform": "Platform",
+    "timeSpent": "Harcanan süre",
+    "rating": "Puan",
+    "notes": "Notlar",
+    "editTitle": "İlerlemeyi güncelle",
     "close": "Kapat"
   },
   "contentType": {
@@ -93,5 +101,14 @@
   "settings": {
     "language": "Dil",
     "systemDefault": "Sistem varsayılanı"
+  },
+  "stats": {
+    "byType": "Türe Göre",
+    "items": "içerik",
+    "inProgress": "Devam Ediyor",
+    "emptyHint": "İstatistikleri görmek için kitaplığına bir şeyler ekle.",
+    "xpToNextLevel": "Sonraki seviyeye {{xp}} XP",
+    "byTypeA11y": "Türe göre {{count}} içerik",
+    "levelProgressA11y": "Seviye {{level}}, sonraki seviyeye %{{percent}}"
   }
 }

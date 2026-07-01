@@ -59,10 +59,18 @@
     "dropped": "中断"
   },
   "detail": {
+    "back": "戻る",
+    "notFound": "アイテムが見つかりません",
     "statusLabel": "ステータス",
     "progressLabel": "進捗",
     "current": "現在",
     "total": "合計",
+    "aboutTitle": "概要",
+    "platform": "プラットフォーム",
+    "timeSpent": "プレイ・視聴時間",
+    "rating": "評価",
+    "notes": "メモ",
+    "editTitle": "進捗を更新",
     "close": "閉じる"
   },
   "contentType": {
@@ -93,5 +101,14 @@
   "settings": {
     "language": "言語",
     "systemDefault": "システムの既定"
+  },
+  "stats": {
+    "byType": "タイプ別",
+    "items": "件",
+    "inProgress": "進行中",
+    "emptyHint": "ライブラリに追加すると、ここに統計が表示されます。",
+    "xpToNextLevel": "次のレベルまで {{xp}} XP",
+    "byTypeA11y": "タイプ別に{{count}}件",
+    "levelProgressA11y": "レベル {{level}}、次のレベルまで{{percent}}%"
   }
 }
