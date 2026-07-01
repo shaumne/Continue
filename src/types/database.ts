@@ -328,7 +328,13 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      log_activity: {
+        Args: {
+          p_content_item_id: string
+          p_event: Database["public"]["Enums"]["activity_event"]
+        }
+        Returns: undefined
+      }
     }
     Enums: {
       activity_event: "start" | "progress" | "complete" | "rate"
