@@ -37,7 +37,9 @@
     "notSure": "Ne yapacağını bilemedin mi?",
     "notSureHint": "Vaktine göre öneri al",
     "letsDecide": "Karar Verelim",
-    "emptyHint": "Başlamak için Add Content sekmesinden bir şey ekle."
+    "emptyHint": "Başlamak için Add Content sekmesinden bir şey ekle.",
+    "unitsLeft": "{{count}} kaldı",
+    "noTimeSet": "Günlük süreni Profil'den ayarla"
   },
   "addContent": {
     "title": "İçerik Ekle",

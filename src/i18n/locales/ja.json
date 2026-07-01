@@ -37,7 +37,9 @@
     "notSure": "何をするか迷っていますか？",
     "notSureHint": "空き時間に合わせて提案します",
     "letsDecide": "決めましょう",
-    "emptyHint": "「コンテンツを追加」タブから追加して始めましょう。"
+    "emptyHint": "「コンテンツを追加」タブから追加して始めましょう。",
+    "unitsLeft": "残り {{count}}",
+    "noTimeSet": "プロフィールで1日の時間を設定"
   },
   "addContent": {
     "title": "コンテンツを追加",

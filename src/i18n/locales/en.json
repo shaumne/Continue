@@ -37,7 +37,9 @@
     "notSure": "Not sure what to do?",
     "notSureHint": "Get a suggestion based on your time",
     "letsDecide": "Let's Decide",
-    "emptyHint": "Add something from the Add Content tab to get started."
+    "emptyHint": "Add something from the Add Content tab to get started.",
+    "unitsLeft": "{{count}} left",
+    "noTimeSet": "Set your daily time in Profile"
   },
   "addContent": {
     "title": "Add Content",
