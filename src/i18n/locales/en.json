@@ -110,5 +110,18 @@
     "xpToNextLevel": "{{xp}} XP to next level",
     "byTypeA11y": "{{count}} items by type",
     "levelProgressA11y": "Level {{level}}, {{percent}}% to next level"
+  },
+  "quests": {
+    "daily": "Daily Quests",
+    "weekly": "Weekly Quests",
+    "emptyHint": "No quests available right now.",
+    "xpReward": "+{{xp}} XP",
+    "completed": "Completed"
+  },
+  "achievements": {
+    "title": "Achievements",
+    "summary": "{{unlocked}} of {{total}} unlocked",
+    "unlocked": "Unlocked",
+    "progressA11y": "{{progress}} of {{target}}"
   }
 }

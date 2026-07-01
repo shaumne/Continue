@@ -110,5 +110,18 @@
     "xpToNextLevel": "Sonraki seviyeye {{xp}} XP",
     "byTypeA11y": "Türe göre {{count}} içerik",
     "levelProgressA11y": "Seviye {{level}}, sonraki seviyeye %{{percent}}"
+  },
+  "quests": {
+    "daily": "Günlük Görevler",
+    "weekly": "Haftalık Görevler",
+    "emptyHint": "Şu anda kullanılabilir görev yok.",
+    "xpReward": "+{{xp}} XP",
+    "completed": "Tamamlandı"
+  },
+  "achievements": {
+    "title": "Başarımlar",
+    "summary": "{{total}} başarımdan {{unlocked}} tanesi açıldı",
+    "unlocked": "Açıldı",
+    "progressA11y": "{{target}} üzerinden {{progress}}"
   }
 }

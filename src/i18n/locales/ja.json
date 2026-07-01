@@ -110,5 +110,18 @@
     "xpToNextLevel": "次のレベルまで {{xp}} XP",
     "byTypeA11y": "タイプ別に{{count}}件",
     "levelProgressA11y": "レベル {{level}}、次のレベルまで{{percent}}%"
+  },
+  "quests": {
+    "daily": "デイリークエスト",
+    "weekly": "ウィークリークエスト",
+    "emptyHint": "現在利用できるクエストはありません。",
+    "xpReward": "+{{xp}} XP",
+    "completed": "完了"
+  },
+  "achievements": {
+    "title": "実績",
+    "summary": "{{total}}個中{{unlocked}}個解除済み",
+    "unlocked": "解除済み",
+    "progressA11y": "{{target}}個中{{progress}}個"
   }
 }
