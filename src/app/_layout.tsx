@@ -5,11 +5,12 @@ import { useEffect } from 'react';
 import { useColorScheme } from 'react-native';
 
 import { AnimatedSplashOverlay } from '@/components/animated-icon';
+import { AuthScreen } from '@/components/auth/auth-screen';
 import AppTabs from '@/components/app-tabs';
 import { getDeviceLanguage, initI18n } from '@/i18n';
 import { queryClient } from '@/lib/query-client';
 import { useLanguage } from '@/store/language';
-import { initSessionListener } from '@/store/session';
+import { initSessionListener, useSession } from '@/store/session';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -22,16 +23,24 @@ export default function TabLayout() {
   // Subscribe so the component re-renders when the language changes.
   useLanguage((s) => s.resolved);
 
+  const initialized = useSession((s) => s.initialized);
+  const session = useSession((s) => s.session);
+
   useEffect(() => {
     const unsubscribe = initSessionListener();
     return unsubscribe;
   }, []);
 
+  useEffect(() => {
+    if (initialized) SplashScreen.hideAsync();
+  }, [initialized]);
+
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
         <AnimatedSplashOverlay />
-        <AppTabs />
+        {/* Session guard: no session -> auth; otherwise the tab app. */}
+        {!initialized ? null : session ? <AppTabs /> : <AuthScreen />}
       </ThemeProvider>
     </QueryClientProvider>
   );

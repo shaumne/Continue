@@ -47,6 +47,21 @@
     "youtube": "YouTube",
     "course": "Kurs"
   },
+  "auth": {
+    "loginTitle": "Tekrar hoş geldin",
+    "registerTitle": "Hesabını oluştur",
+    "subtitle": "Oynadığın, izlediğin ve okuduğun her şeyi takip et.",
+    "email": "E-posta",
+    "password": "Parola",
+    "emailPlaceholder": "sen@ornek.com",
+    "passwordPlaceholder": "En az 6 karakter",
+    "login": "Giriş yap",
+    "register": "Kayıt ol",
+    "toggleToRegister": "Hesabın yok mu? Kayıt ol",
+    "toggleToLogin": "Zaten hesabın var mı? Giriş yap",
+    "signOut": "Çıkış yap",
+    "checkEmail": "E-postanı doğrulamak için gelen kutunu kontrol et."
+  },
   "settings": {
     "language": "Dil",
     "systemDefault": "Sistem varsayılanı"

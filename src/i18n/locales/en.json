@@ -47,6 +47,21 @@
     "youtube": "YouTube",
     "course": "Course"
   },
+  "auth": {
+    "loginTitle": "Welcome back",
+    "registerTitle": "Create your account",
+    "subtitle": "Track everything you play, watch and read.",
+    "email": "Email",
+    "password": "Password",
+    "emailPlaceholder": "you@example.com",
+    "passwordPlaceholder": "At least 6 characters",
+    "login": "Log in",
+    "register": "Sign up",
+    "toggleToRegister": "No account? Sign up",
+    "toggleToLogin": "Already have an account? Log in",
+    "signOut": "Sign out",
+    "checkEmail": "Check your inbox to confirm your email."
+  },
   "settings": {
     "language": "Language",
     "systemDefault": "System default"

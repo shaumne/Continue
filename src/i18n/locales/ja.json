@@ -47,6 +47,21 @@
     "youtube": "YouTube",
     "course": "コース"
   },
+  "auth": {
+    "loginTitle": "おかえりなさい",
+    "registerTitle": "アカウントを作成",
+    "subtitle": "プレイ・視聴・読書したものをすべて記録しましょう。",
+    "email": "メールアドレス",
+    "password": "パスワード",
+    "emailPlaceholder": "you@example.com",
+    "passwordPlaceholder": "6文字以上",
+    "login": "ログイン",
+    "register": "新規登録",
+    "toggleToRegister": "アカウントがない場合は新規登録",
+    "toggleToLogin": "すでにアカウントをお持ちの場合はログイン",
+    "signOut": "ログアウト",
+    "checkEmail": "メールを確認してアドレスを認証してください。"
+  },
   "settings": {
     "language": "言語",
     "systemDefault": "システムの既定"
