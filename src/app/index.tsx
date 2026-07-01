@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { HeroNight } from '@/components/hero-night';
 import { ItemEditor } from '@/components/item-editor';
 import { TypeBadge } from '@/components/type-badge';
 import { Brand, Colors, ContentTypeColors, Spacing } from '@/constants/theme';
@@ -34,52 +35,55 @@ export default function HomeScreen() {
   function decide() {
     const pool = continueItems.length ? continueItems : items;
     if (!pool.length) return;
-    const pick = pool[Math.floor(Math.random() * pool.length)];
-    setSelected(pick);
+    setSelected(pool[Math.floor(Math.random() * pool.length)]);
   }
 
   return (
-    <SafeAreaView style={[styles.safe, { backgroundColor: c.background }]}>
-      <View style={styles.header}>
-        <Text style={[styles.greeting, { color: c.text }]} numberOfLines={1}>
-          {t('home.greeting', { name })}
-        </Text>
-        <Pressable
-          onPress={() => router.push('/explore')}
-          style={[styles.addBtn, { backgroundColor: Brand.primary }]}
-          hitSlop={8}>
-          <Ionicons name="add" size={18} color="#fff" />
-          <Text style={styles.addText}>{t('addContent.addToLibrary')}</Text>
-        </Pressable>
-      </View>
-
-      {/* Hero: available time + Let's Decide */}
-      <View style={[styles.hero, { backgroundColor: Brand.primaryMuted }]}>
-        <Text style={styles.heroLabel}>
-          {budget ? t('home.availableTime', { time: formatDuration(budget) }) : t('home.noTimeSet')}
-        </Text>
-        <Text style={styles.heroHint}>{t('home.notSureHint')}</Text>
-        <Pressable onPress={decide} style={styles.decideBtn}>
-          <Ionicons name="dice" size={18} color={Brand.primary} />
-          <Text style={[styles.decideText, { color: Brand.primary }]}>{t('home.letsDecide')}</Text>
-        </Pressable>
-      </View>
-
-      <Text style={[styles.section, { color: c.text }]}>{t('home.continueTitle')}</Text>
-
+    <SafeAreaView style={[styles.safe, { backgroundColor: c.background }]} edges={['top']}>
       <FlatList
         data={continueItems}
         keyExtractor={(item) => item.id}
-        contentContainerStyle={styles.list}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.content}
+        ListHeaderComponent={
+          <View>
+            <HeroNight>
+              <Text style={styles.heroGreeting}>{t('home.greeting', { name })} 👋</Text>
+              <View style={styles.heroBottom}>
+                <Text style={styles.heroTime}>
+                  {t('home.availableTime', { time: budget ? formatDuration(budget) : '—' })}
+                </Text>
+              </View>
+            </HeroNight>
+
+            <Pressable style={styles.sectionRow} onPress={() => router.push('/library')}>
+              <Text style={[styles.section, { color: c.text }]}>{t('home.continueTitle')}</Text>
+              <Ionicons name="arrow-forward" size={20} color={c.textSecondary} />
+            </Pressable>
+          </View>
+        }
         ListEmptyComponent={
           <Text style={[styles.empty, { color: c.textSecondary }]}>{t('home.emptyHint')}</Text>
+        }
+        ListFooterComponent={
+          <View style={[styles.decideCard, { backgroundColor: c.backgroundElement }]}>
+            <View style={styles.flex}>
+              <Text style={[styles.decideTitle, { color: c.text }]}>{t('home.notSure')}</Text>
+              <Text style={[styles.decideHint, { color: c.textSecondary }]}>
+                {t('home.notSureHint')}
+              </Text>
+            </View>
+            <Pressable onPress={decide} style={[styles.decideBtn, { backgroundColor: Brand.primary }]}>
+              <Text style={styles.decideBtnText}>{t('home.letsDecide')}</Text>
+              <Ionicons name="dice" size={18} color="#fff" />
+            </Pressable>
+          </View>
         }
         renderItem={({ item }) => {
           const type = item.content?.type;
           const hasProgress = item.progress_total && item.progress_current != null;
-          const progress = hasProgress
-            ? item.progress_current! / item.progress_total!
-            : 0;
+          const pct = hasProgress ? item.progress_current! / item.progress_total! : 0;
+          const barColor = type ? ContentTypeColors[type] : Brand.primary;
           return (
             <Pressable
               onPress={() => setSelected(item)}
@@ -91,33 +95,26 @@ export default function HomeScreen() {
                 transition={150}
               />
               <View style={styles.flex}>
-                {type ? <TypeBadge type={type} /> : null}
-                <Text style={[styles.cardTitle, { color: c.text }]} numberOfLines={1}>
-                  {item.content?.title ?? '—'}
-                </Text>
-                {hasProgress ? (
-                  <Text style={[styles.progressText, { color: c.textSecondary }]}>
-                    {item.progress_current} / {item.progress_total}
-                    {'  ·  '}
-                    {t('home.unitsLeft', {
-                      count: item.progress_total! - item.progress_current!,
-                    })}
+                <View style={styles.cardTop}>
+                  <Text style={[styles.cardTitle, { color: c.text }]} numberOfLines={1}>
+                    {item.content?.title ?? '—'}
                   </Text>
-                ) : (
-                  <Text style={[styles.progressText, { color: c.textSecondary }]}>
-                    {t(`status.${item.status}`)}
-                  </Text>
-                )}
+                  {type ? <TypeBadge type={type} /> : null}
+                </View>
                 <View style={[styles.track, { backgroundColor: c.backgroundSelected }]}>
                   <View
-                    style={[
-                      styles.fill,
-                      {
-                        width: `${Math.round(progress * 100)}%`,
-                        backgroundColor: type ? ContentTypeColors[type] : Brand.primary,
-                      },
-                    ]}
+                    style={[styles.fill, { width: `${Math.round(pct * 100)}%`, backgroundColor: barColor }]}
                   />
+                </View>
+                <View style={styles.cardBottom}>
+                  <Text style={[styles.metaLeft, { color: c.textSecondary }]}>
+                    {hasProgress ? `${Math.round(pct * 100)}%` : t(`status.${item.status}`)}
+                  </Text>
+                  {hasProgress ? (
+                    <Text style={[styles.metaRight, { color: c.textSecondary }]}>
+                      {t('home.unitsLeft', { count: item.progress_total! - item.progress_current! })}
+                    </Text>
+                  ) : null}
                 </View>
               </View>
             </Pressable>
@@ -133,56 +130,53 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, paddingHorizontal: Spacing.four },
-  header: {
+  safe: { flex: 1 },
+  content: { paddingHorizontal: Spacing.four, paddingBottom: Spacing.five, gap: Spacing.two },
+  heroGreeting: { color: '#fff', fontSize: 24, fontWeight: '800' },
+  heroBottom: { marginTop: 'auto' },
+  heroTime: { color: '#C9B6FF', fontSize: 18, fontWeight: '800' },
+  sectionRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginTop: Spacing.three,
-    gap: Spacing.three,
-  },
-  flex: { flex: 1 },
-  greeting: { flex: 1, fontSize: 22, fontWeight: '700' },
-  addBtn: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.two,
-    borderRadius: 999,
-  },
-  addText: { color: '#fff', fontWeight: '600', fontSize: 14 },
-  hero: {
-    borderRadius: 16,
-    padding: Spacing.four,
     marginTop: Spacing.four,
-    gap: Spacing.one,
+    marginBottom: Spacing.one,
   },
-  heroLabel: { color: '#fff', fontSize: 18, fontWeight: '700' },
-  heroHint: { color: '#ffffffcc', fontSize: 13, marginBottom: Spacing.three },
-  decideBtn: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: Spacing.two,
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    paddingVertical: Spacing.three,
-  },
-  decideText: { fontSize: 15, fontWeight: '700' },
-  section: { fontSize: 17, fontWeight: '600', marginTop: Spacing.four },
-  list: { paddingVertical: Spacing.three, gap: Spacing.two },
-  empty: { fontSize: 14, textAlign: 'center', paddingTop: Spacing.five },
+  section: { fontSize: 18, fontWeight: '700' },
+  empty: { fontSize: 14, textAlign: 'center', paddingTop: Spacing.four },
+  flex: { flex: 1 },
   card: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderRadius: 12,
+    borderRadius: 14,
     padding: Spacing.two,
     gap: Spacing.three,
   },
-  cover: { width: 52, height: 74, borderRadius: 8, backgroundColor: '#0003' },
-  cardTitle: { fontSize: 15, fontWeight: '600', marginTop: 4 },
-  progressText: { fontSize: 12, marginTop: 2, marginBottom: Spacing.one },
-  track: { height: 5, borderRadius: 3, overflow: 'hidden' },
-  fill: { height: 5, borderRadius: 3 },
+  cover: { width: 54, height: 76, borderRadius: 8, backgroundColor: '#0003' },
+  cardTop: { flexDirection: 'row', alignItems: 'center', gap: Spacing.two },
+  cardTitle: { flex: 1, fontSize: 15, fontWeight: '700' },
+  track: { height: 6, borderRadius: 3, overflow: 'hidden', marginTop: Spacing.two },
+  fill: { height: 6, borderRadius: 3 },
+  cardBottom: { flexDirection: 'row', justifyContent: 'space-between', marginTop: Spacing.one },
+  metaLeft: { fontSize: 12, fontWeight: '600' },
+  metaRight: { fontSize: 12 },
+  decideCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderRadius: 14,
+    padding: Spacing.four,
+    marginTop: Spacing.three,
+    gap: Spacing.three,
+  },
+  decideTitle: { fontSize: 15, fontWeight: '700' },
+  decideHint: { fontSize: 13, marginTop: 2 },
+  decideBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.two,
+    paddingHorizontal: Spacing.three,
+    paddingVertical: Spacing.two,
+    borderRadius: 10,
+  },
+  decideBtnText: { color: '#fff', fontSize: 14, fontWeight: '700' },
 });
