@@ -8,7 +8,20 @@
     "loading": "読み込み中…",
     "error": "問題が発生しました",
     "empty": "まだ何もありません",
-    "seeAll": "すべて見る"
+    "seeAll": "すべて見る",
+    "comingSoon": "近日公開"
+  },
+  "profile": {
+    "level": "レベル {{level}}",
+    "xp": "{{xp}} XP",
+    "streak": "連続",
+    "backlog": "積み",
+    "completed": "完了"
+  },
+  "languages": {
+    "en": "English",
+    "tr": "Türkçe",
+    "ja": "日本語"
   },
   "tabs": {
     "home": "ホーム",

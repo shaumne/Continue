@@ -8,7 +8,20 @@
     "loading": "Loading…",
     "error": "Something went wrong",
     "empty": "Nothing here yet",
-    "seeAll": "See all"
+    "seeAll": "See all",
+    "comingSoon": "Coming soon"
+  },
+  "profile": {
+    "level": "Level {{level}}",
+    "xp": "{{xp}} XP",
+    "streak": "Streak",
+    "backlog": "Backlog",
+    "completed": "Completed"
+  },
+  "languages": {
+    "en": "English",
+    "tr": "Türkçe",
+    "ja": "日本語"
   },
   "tabs": {
     "home": "Home",

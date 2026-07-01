@@ -1,5 +1,7 @@
+import { Ionicons } from '@expo/vector-icons';
 import { useQuery } from '@tanstack/react-query';
 import { Image } from 'expo-image';
+import { router } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -56,7 +58,12 @@ export default function SearchScreen() {
 
   return (
     <SafeAreaView style={[styles.safe, { backgroundColor: c.background }]}>
-      <Text style={[styles.title, { color: c.text }]}>{t('addContent.title')}</Text>
+      <View style={styles.headerRow}>
+        <Pressable onPress={() => router.back()} hitSlop={8}>
+          <Ionicons name="chevron-back" size={26} color={c.text} />
+        </Pressable>
+        <Text style={[styles.title, { color: c.text }]}>{t('addContent.title')}</Text>
+      </View>
 
       <View style={styles.types}>
         {TYPES.map((ty) => {
@@ -141,7 +148,13 @@ export default function SearchScreen() {
 
 const styles = StyleSheet.create({
   safe: { flex: 1, paddingHorizontal: Spacing.four },
-  title: { fontSize: 26, fontWeight: '700', marginTop: Spacing.three },
+  headerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.two,
+    marginTop: Spacing.three,
+  },
+  title: { fontSize: 26, fontWeight: '700' },
   types: { flexDirection: 'row', gap: Spacing.two, marginTop: Spacing.three },
   chip: {
     paddingHorizontal: Spacing.three,

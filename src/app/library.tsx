@@ -1,7 +1,5 @@
-import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
-import { Link } from 'expo-router';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -10,36 +8,54 @@ import { ItemEditor } from '@/components/item-editor';
 import { Brand, Colors, ContentTypeColors, Spacing } from '@/constants/theme';
 import { useLibrary, type LibraryItem } from '@/hooks/use-library';
 import { useSession } from '@/store/session';
+import type { ContentType } from '@/types/models';
 
-export default function HomeScreen() {
+type Filter = 'all' | ContentType;
+
+export default function LibraryScreen() {
   const { t } = useTranslation();
   const c = Colors.dark;
 
-  const email = useSession((s) => s.session?.user.email ?? '');
   const userId = useSession((s) => s.session?.user.id);
-  const name = email.split('@')[0] || 'there';
-
   const { data: items = [] } = useLibrary(userId);
+  const [filter, setFilter] = useState<Filter>('all');
   const [selected, setSelected] = useState<LibraryItem | null>(null);
+
+  // Only offer filters for types actually present in the library.
+  const presentTypes = useMemo(() => {
+    const set = new Set<ContentType>();
+    items.forEach((i) => i.content?.type && set.add(i.content.type));
+    return [...set];
+  }, [items]);
+
+  const filtered =
+    filter === 'all' ? items : items.filter((i) => i.content?.type === filter);
+
+  const filters: Filter[] = ['all', ...presentTypes];
 
   return (
     <SafeAreaView style={[styles.safe, { backgroundColor: c.background }]}>
-      <View style={styles.header}>
-        <Text style={[styles.greeting, { color: c.text }]} numberOfLines={1}>
-          {t('home.greeting', { name })}
-        </Text>
-        <Link href="/explore" asChild>
-          <Pressable style={[styles.addBtn, { backgroundColor: Brand.primary }]} hitSlop={8}>
-            <Ionicons name="add" size={18} color="#fff" />
-            <Text style={styles.addText}>{t('addContent.addToLibrary')}</Text>
-          </Pressable>
-        </Link>
+      <Text style={[styles.title, { color: c.text }]}>{t('tabs.library')}</Text>
+
+      <View style={styles.filters}>
+        {filters.map((f) => {
+          const active = f === filter;
+          const color = f === 'all' ? Brand.primary : ContentTypeColors[f];
+          return (
+            <Pressable
+              key={f}
+              onPress={() => setFilter(f)}
+              style={[styles.chip, { backgroundColor: active ? color : c.backgroundElement }]}>
+              <Text style={[styles.chipText, { color: active ? '#fff' : c.textSecondary }]}>
+                {f === 'all' ? t('addContent.title') : t(`contentType.${f}`)}
+              </Text>
+            </Pressable>
+          );
+        })}
       </View>
 
-      <Text style={[styles.section, { color: c.text }]}>{t('home.continueTitle')}</Text>
-
       <FlatList
-        data={items}
+        data={filtered}
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.list}
         ListEmptyComponent={
@@ -62,7 +78,7 @@ export default function HomeScreen() {
                 transition={150}
               />
               <View style={styles.flex}>
-                <Text style={[styles.title, { color: c.text }]} numberOfLines={1}>
+                <Text style={[styles.rowTitle, { color: c.text }]} numberOfLines={1}>
                   {item.content?.title ?? '—'}
                 </Text>
                 <Text style={[styles.status, { color: c.textSecondary }]}>
@@ -94,25 +110,10 @@ export default function HomeScreen() {
 
 const styles = StyleSheet.create({
   safe: { flex: 1, paddingHorizontal: Spacing.four },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginTop: Spacing.three,
-    gap: Spacing.three,
-  },
-  flex: { flex: 1 },
-  greeting: { flex: 1, fontSize: 22, fontWeight: '700' },
-  addBtn: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.two,
-    borderRadius: 999,
-  },
-  addText: { color: '#fff', fontWeight: '600', fontSize: 14 },
-  section: { fontSize: 17, fontWeight: '600', marginTop: Spacing.four },
+  title: { fontSize: 26, fontWeight: '700', marginTop: Spacing.three },
+  filters: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.two, marginTop: Spacing.three },
+  chip: { paddingHorizontal: Spacing.three, paddingVertical: Spacing.two, borderRadius: 999 },
+  chipText: { fontSize: 13, fontWeight: '600' },
   list: { paddingVertical: Spacing.three, gap: Spacing.two },
   empty: { fontSize: 14, textAlign: 'center', paddingTop: Spacing.five },
   row: {
@@ -122,8 +123,9 @@ const styles = StyleSheet.create({
     padding: Spacing.two,
     gap: Spacing.three,
   },
+  flex: { flex: 1 },
   cover: { width: 46, height: 66, borderRadius: 6, backgroundColor: '#0003' },
-  title: { fontSize: 15, fontWeight: '600' },
+  rowTitle: { fontSize: 15, fontWeight: '600' },
   status: { fontSize: 12, marginTop: 2, marginBottom: Spacing.one },
   track: { height: 4, borderRadius: 2, overflow: 'hidden' },
   fill: { height: 4, borderRadius: 2 },

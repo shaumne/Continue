@@ -8,7 +8,20 @@
     "loading": "Yükleniyor…",
     "error": "Bir şeyler ters gitti",
     "empty": "Burada henüz bir şey yok",
-    "seeAll": "Tümünü gör"
+    "seeAll": "Tümünü gör",
+    "comingSoon": "Yakında"
+  },
+  "profile": {
+    "level": "Seviye {{level}}",
+    "xp": "{{xp}} XP",
+    "streak": "Seri",
+    "backlog": "Sırada",
+    "completed": "Tamamlanan"
+  },
+  "languages": {
+    "en": "English",
+    "tr": "Türkçe",
+    "ja": "日本語"
   },
   "tabs": {
     "home": "Ana Sayfa",
