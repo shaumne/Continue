@@ -28,7 +28,12 @@
   "addContent": {
     "title": "İçerik Ekle",
     "searchPlaceholder": "Bir başlık ara…",
-    "recentSearches": "Son Aramalar"
+    "recentSearches": "Son Aramalar",
+    "searching": "Aranıyor…",
+    "noResults": "“{{query}}” için sonuç yok",
+    "addToLibrary": "Ekle",
+    "added": "Eklendi",
+    "typePrompt": "Ne ekliyorsun?"
   },
   "status": {
     "backlog": "Sırada",

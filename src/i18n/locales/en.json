@@ -28,7 +28,12 @@
   "addContent": {
     "title": "Add Content",
     "searchPlaceholder": "Search for a title…",
-    "recentSearches": "Recent Searches"
+    "recentSearches": "Recent Searches",
+    "searching": "Searching…",
+    "noResults": "No results for “{{query}}”",
+    "addToLibrary": "Add",
+    "added": "Added",
+    "typePrompt": "What are you adding?"
   },
   "status": {
     "backlog": "Backlog",

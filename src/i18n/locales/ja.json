@@ -28,7 +28,12 @@
   "addContent": {
     "title": "コンテンツを追加",
     "searchPlaceholder": "タイトルを検索…",
-    "recentSearches": "最近の検索"
+    "recentSearches": "最近の検索",
+    "searching": "検索中…",
+    "noResults": "「{{query}}」の結果がありません",
+    "addToLibrary": "追加",
+    "added": "追加済み",
+    "typePrompt": "何を追加しますか？"
   },
   "status": {
     "backlog": "積み",
