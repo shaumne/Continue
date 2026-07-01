@@ -1,0 +1,54 @@
+{
+  "common": {
+    "appName": "Continue",
+    "cancel": "キャンセル",
+    "save": "保存",
+    "search": "検索",
+    "retry": "再試行",
+    "loading": "読み込み中…",
+    "error": "問題が発生しました",
+    "empty": "まだ何もありません",
+    "seeAll": "すべて見る"
+  },
+  "tabs": {
+    "home": "ホーム",
+    "library": "ライブラリ",
+    "quests": "クエスト",
+    "stats": "統計",
+    "profile": "プロフィール"
+  },
+  "home": {
+    "greeting": "こんばんは、{{name}}さん",
+    "availableTime": "今日は {{time}} 使えます",
+    "continueTitle": "続きから再開",
+    "notSure": "何をするか迷っていますか？",
+    "notSureHint": "空き時間に合わせて提案します",
+    "letsDecide": "決めましょう"
+  },
+  "addContent": {
+    "title": "コンテンツを追加",
+    "searchPlaceholder": "タイトルを検索…",
+    "recentSearches": "最近の検索"
+  },
+  "status": {
+    "backlog": "積み",
+    "started": "進行中",
+    "paused": "一時停止",
+    "completed": "完了",
+    "dropped": "中断"
+  },
+  "contentType": {
+    "game": "ゲーム",
+    "movie": "映画",
+    "tv": "テレビ番組",
+    "book": "本",
+    "anime": "アニメ",
+    "podcast": "ポッドキャスト",
+    "youtube": "YouTube",
+    "course": "コース"
+  },
+  "settings": {
+    "language": "言語",
+    "systemDefault": "システムの既定"
+  }
+}

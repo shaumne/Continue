@@ -1,0 +1,54 @@
+{
+  "common": {
+    "appName": "Continue",
+    "cancel": "Cancel",
+    "save": "Save",
+    "search": "Search",
+    "retry": "Retry",
+    "loading": "Loading…",
+    "error": "Something went wrong",
+    "empty": "Nothing here yet",
+    "seeAll": "See all"
+  },
+  "tabs": {
+    "home": "Home",
+    "library": "Library",
+    "quests": "Quests",
+    "stats": "Stats",
+    "profile": "Profile"
+  },
+  "home": {
+    "greeting": "Good Evening, {{name}}",
+    "availableTime": "Today you have {{time}} available",
+    "continueTitle": "Continue Where You Left Off",
+    "notSure": "Not sure what to do?",
+    "notSureHint": "Get a suggestion based on your time",
+    "letsDecide": "Let's Decide"
+  },
+  "addContent": {
+    "title": "Add Content",
+    "searchPlaceholder": "Search for a title…",
+    "recentSearches": "Recent Searches"
+  },
+  "status": {
+    "backlog": "Backlog",
+    "started": "Started",
+    "paused": "Paused",
+    "completed": "Completed",
+    "dropped": "Dropped"
+  },
+  "contentType": {
+    "game": "Game",
+    "movie": "Movie",
+    "tv": "TV Show",
+    "book": "Book",
+    "anime": "Anime",
+    "podcast": "Podcast",
+    "youtube": "YouTube",
+    "course": "Course"
+  },
+  "settings": {
+    "language": "Language",
+    "systemDefault": "System default"
+  }
+}

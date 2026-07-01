@@ -1,0 +1,54 @@
+{
+  "common": {
+    "appName": "Continue",
+    "cancel": "İptal",
+    "save": "Kaydet",
+    "search": "Ara",
+    "retry": "Tekrar dene",
+    "loading": "Yükleniyor…",
+    "error": "Bir şeyler ters gitti",
+    "empty": "Burada henüz bir şey yok",
+    "seeAll": "Tümünü gör"
+  },
+  "tabs": {
+    "home": "Ana Sayfa",
+    "library": "Kitaplık",
+    "quests": "Görevler",
+    "stats": "İstatistik",
+    "profile": "Profil"
+  },
+  "home": {
+    "greeting": "İyi Akşamlar, {{name}}",
+    "availableTime": "Bugün {{time}} vaktin var",
+    "continueTitle": "Kaldığın Yerden Devam Et",
+    "notSure": "Ne yapacağını bilemedin mi?",
+    "notSureHint": "Vaktine göre öneri al",
+    "letsDecide": "Karar Verelim"
+  },
+  "addContent": {
+    "title": "İçerik Ekle",
+    "searchPlaceholder": "Bir başlık ara…",
+    "recentSearches": "Son Aramalar"
+  },
+  "status": {
+    "backlog": "Sırada",
+    "started": "Başlandı",
+    "paused": "Duraklatıldı",
+    "completed": "Tamamlandı",
+    "dropped": "Bırakıldı"
+  },
+  "contentType": {
+    "game": "Oyun",
+    "movie": "Film",
+    "tv": "Dizi",
+    "book": "Kitap",
+    "anime": "Anime",
+    "podcast": "Podcast",
+    "youtube": "YouTube",
+    "course": "Kurs"
+  },
+  "settings": {
+    "language": "Dil",
+    "systemDefault": "Sistem varsayılanı"
+  }
+}
