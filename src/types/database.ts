@@ -1,4 +1,4 @@
-export type Json =
+﻿export type Json =
   | string
   | number
   | boolean
@@ -137,6 +137,7 @@ export type Database = {
       quests: {
         Row: {
           active: boolean
+          code: string | null
           content_type: Database["public"]["Enums"]["content_type"] | null
           description: string | null
           id: string
@@ -147,6 +148,7 @@ export type Database = {
         }
         Insert: {
           active?: boolean
+          code?: string | null
           content_type?: Database["public"]["Enums"]["content_type"] | null
           description?: string | null
           id?: string
@@ -157,6 +159,7 @@ export type Database = {
         }
         Update: {
           active?: boolean
+          code?: string | null
           content_type?: Database["public"]["Enums"]["content_type"] | null
           description?: string | null
           id?: string
@@ -328,11 +331,28 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      advance_achievement: {
+        Args: { p_inc: number; p_key: string; p_uid: string }
+        Returns: undefined
+      }
+      advance_quest: {
+        Args: {
+          p_code: string
+          p_inc: number
+          p_period_key: string
+          p_uid: string
+        }
+        Returns: undefined
+      }
       log_activity: {
         Args: {
           p_content_item_id: string
           p_event: Database["public"]["Enums"]["activity_event"]
         }
+        Returns: undefined
+      }
+      set_achievement_high_water: {
+        Args: { p_key: string; p_uid: string; p_value: number }
         Returns: undefined
       }
     }
