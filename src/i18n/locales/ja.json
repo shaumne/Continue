@@ -43,6 +43,13 @@
     "completed": "完了",
     "dropped": "中断"
   },
+  "detail": {
+    "statusLabel": "ステータス",
+    "progressLabel": "進捗",
+    "current": "現在",
+    "total": "合計",
+    "close": "閉じる"
+  },
   "contentType": {
     "game": "ゲーム",
     "movie": "映画",

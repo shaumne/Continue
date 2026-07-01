@@ -1,11 +1,13 @@
 import { Image } from 'expo-image';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { ItemEditor } from '@/components/item-editor';
 import { Brand, Colors, ContentTypeColors, Spacing } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { useLibrary } from '@/hooks/use-library';
+import { useLibrary, type LibraryItem } from '@/hooks/use-library';
 import { useSession } from '@/store/session';
 
 export default function HomeScreen() {
@@ -19,6 +21,7 @@ export default function HomeScreen() {
   const name = email.split('@')[0] || 'there';
 
   const { data: items = [] } = useLibrary(userId);
+  const [selected, setSelected] = useState<LibraryItem | null>(null);
 
   return (
     <SafeAreaView style={[styles.safe, { backgroundColor: c.background }]}>
@@ -52,7 +55,9 @@ export default function HomeScreen() {
               ? item.progress_current / item.progress_total
               : 0;
           return (
-            <View style={[styles.row, { backgroundColor: c.backgroundElement }]}>
+            <Pressable
+              onPress={() => setSelected(item)}
+              style={[styles.row, { backgroundColor: c.backgroundElement }]}>
               <Image
                 source={item.content?.cover_url}
                 style={styles.cover}
@@ -78,10 +83,14 @@ export default function HomeScreen() {
                   />
                 </View>
               </View>
-            </View>
+            </Pressable>
           );
         }}
       />
+
+      {selected ? (
+        <ItemEditor key={selected.id} item={selected} onClose={() => setSelected(null)} />
+      ) : null}
     </SafeAreaView>
   );
 }

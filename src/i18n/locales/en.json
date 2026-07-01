@@ -43,6 +43,13 @@
     "completed": "Completed",
     "dropped": "Dropped"
   },
+  "detail": {
+    "statusLabel": "Status",
+    "progressLabel": "Progress",
+    "current": "Current",
+    "total": "Total",
+    "close": "Close"
+  },
   "contentType": {
     "game": "Game",
     "movie": "Movie",

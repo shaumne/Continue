@@ -43,6 +43,13 @@
     "completed": "Tamamlandı",
     "dropped": "Bırakıldı"
   },
+  "detail": {
+    "statusLabel": "Durum",
+    "progressLabel": "İlerleme",
+    "current": "Şu an",
+    "total": "Toplam",
+    "close": "Kapat"
+  },
   "contentType": {
     "game": "Oyun",
     "movie": "Film",
