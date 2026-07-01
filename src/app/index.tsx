@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
-import { Link } from 'expo-router';
+import { router } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
@@ -28,12 +28,13 @@ export default function HomeScreen() {
         <Text style={[styles.greeting, { color: c.text }]} numberOfLines={1}>
           {t('home.greeting', { name })}
         </Text>
-        <Link href="/explore" asChild>
-          <Pressable style={[styles.addBtn, { backgroundColor: Brand.primary }]} hitSlop={8}>
-            <Ionicons name="add" size={18} color="#fff" />
-            <Text style={styles.addText}>{t('addContent.addToLibrary')}</Text>
-          </Pressable>
-        </Link>
+        <Pressable
+          onPress={() => router.push('/explore')}
+          style={[styles.addBtn, { backgroundColor: Brand.primary }]}
+          hitSlop={8}>
+          <Ionicons name="add" size={18} color="#fff" />
+          <Text style={styles.addText}>{t('addContent.addToLibrary')}</Text>
+        </Pressable>
       </View>
 
       <Text style={[styles.section, { color: c.text }]}>{t('home.continueTitle')}</Text>
