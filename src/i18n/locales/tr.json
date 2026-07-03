@@ -113,6 +113,11 @@
     "language": "Dil",
     "systemDefault": "Sistem varsayılanı"
   },
+  "library": {
+    "filterAll": "Tümü",
+    "filtersLabel": "Filtreleri sıfırla",
+    "moreOptions": "{{title}} için daha fazla seçenek"
+  },
   "stats": {
     "byType": "Türe Göre",
     "items": "içerik",
@@ -120,7 +125,20 @@
     "emptyHint": "İstatistikleri görmek için kitaplığına bir şeyler ekle.",
     "xpToNextLevel": "Sonraki seviyeye {{xp}} XP",
     "byTypeA11y": "Türe göre {{count}} içerik",
-    "levelProgressA11y": "Seviye {{level}}, sonraki seviyeye %{{percent}}"
+    "levelProgressA11y": "Seviye {{level}}, sonraki seviyeye %{{percent}}",
+    "week": "Hafta",
+    "month": "Ay",
+    "year": "Yıl",
+    "allTime": "Tüm Zamanlar",
+    "previousYear": "Önceki yıl",
+    "nextYear": "Sonraki yıl",
+    "gamesFinished": "Bitirilen Oyunlar",
+    "moviesWatched": "İzlenen Filmler",
+    "booksRead": "Okunan Kitaplar",
+    "animeEpisodes": "Anime Bölümleri",
+    "totalTime": "Toplam Süre",
+    "avgPerDay": "Günlük Ortalama",
+    "mostConsumedGenres": "En Çok Tüketilen Türler"
   },
   "quests": {
     "daily": "Günlük Görevler",

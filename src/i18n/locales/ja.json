@@ -113,6 +113,11 @@
     "language": "言語",
     "systemDefault": "システムの既定"
   },
+  "library": {
+    "filterAll": "すべて",
+    "filtersLabel": "フィルターをリセット",
+    "moreOptions": "{{title}}のその他のオプション"
+  },
   "stats": {
     "byType": "タイプ別",
     "items": "件",
@@ -120,7 +125,20 @@
     "emptyHint": "ライブラリに追加すると、ここに統計が表示されます。",
     "xpToNextLevel": "次のレベルまで {{xp}} XP",
     "byTypeA11y": "タイプ別に{{count}}件",
-    "levelProgressA11y": "レベル {{level}}、次のレベルまで{{percent}}%"
+    "levelProgressA11y": "レベル {{level}}、次のレベルまで{{percent}}%",
+    "week": "週",
+    "month": "月",
+    "year": "年",
+    "allTime": "全期間",
+    "previousYear": "前年",
+    "nextYear": "翌年",
+    "gamesFinished": "クリアしたゲーム",
+    "moviesWatched": "視聴した映画",
+    "booksRead": "読んだ本",
+    "animeEpisodes": "アニメのエピソード",
+    "totalTime": "合計時間",
+    "avgPerDay": "1日あたりの平均",
+    "mostConsumedGenres": "よく利用するジャンル"
   },
   "quests": {
     "daily": "デイリークエスト",

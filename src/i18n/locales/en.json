@@ -113,6 +113,11 @@
     "language": "Language",
     "systemDefault": "System default"
   },
+  "library": {
+    "filterAll": "All",
+    "filtersLabel": "Reset filters",
+    "moreOptions": "More options for {{title}}"
+  },
   "stats": {
     "byType": "By Type",
     "items": "items",
@@ -120,7 +125,20 @@
     "emptyHint": "Add something to your library to see stats here.",
     "xpToNextLevel": "{{xp}} XP to next level",
     "byTypeA11y": "{{count}} items by type",
-    "levelProgressA11y": "Level {{level}}, {{percent}}% to next level"
+    "levelProgressA11y": "Level {{level}}, {{percent}}% to next level",
+    "week": "Week",
+    "month": "Month",
+    "year": "Year",
+    "allTime": "All Time",
+    "previousYear": "Previous year",
+    "nextYear": "Next year",
+    "gamesFinished": "Games Finished",
+    "moviesWatched": "Movies Watched",
+    "booksRead": "Books Read",
+    "animeEpisodes": "Anime Episodes",
+    "totalTime": "Total Time",
+    "avgPerDay": "Average / Day",
+    "mostConsumedGenres": "Most Consumed Genres"
   },
   "quests": {
     "daily": "Daily Quests",
