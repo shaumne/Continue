@@ -54,6 +54,8 @@ export default function AppTabs() {
       <Tabs.Screen name="content/[id]" options={{ href: null }} />
       {/* Achievements is reached via a link in Profile, not a tab. */}
       <Tabs.Screen name="achievements" options={{ href: null }} />
+      {/* Wrapped is a pushed full-page route, not a tab. */}
+      <Tabs.Screen name="wrapped" options={{ href: null }} />
     </Tabs>
   );
 }
