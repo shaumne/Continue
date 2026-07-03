@@ -16,7 +16,14 @@
     "xp": "{{xp}} XP",
     "streak": "Seri",
     "backlog": "Sırada",
-    "completed": "Tamamlanan"
+    "completed": "Tamamlanan",
+    "levelRingLabel": "Seviye",
+    "levelRingA11y": "Seviye {{level}}, sonraki seviyeye %{{percent}}",
+    "streakRingA11y": "{{streak}} günlük seri",
+    "wrapped": "Yıl Sonu Özetin",
+    "timeBudget": "Günlük Zaman Bütçesi",
+    "timeBudgetNotSet": "Ayarlanmadı",
+    "timeBudgetClear": "Temizle"
   },
   "languages": {
     "en": "English",
@@ -39,7 +46,9 @@
     "letsDecide": "Karar Verelim",
     "emptyHint": "Başlamak için Add Content sekmesinden bir şey ekle.",
     "unitsLeft": "{{count}} kaldı",
-    "noTimeSet": "Günlük süreni Profil'den ayarla"
+    "noTimeSet": "Günlük süreni Profil'den ayarla",
+    "budgetHint": "Bugünkü {{time}} vaktine sığar",
+    "timeLeft": "~{{time}}"
   },
   "addContent": {
     "title": "İçerik Ekle",
@@ -123,5 +132,14 @@
     "summary": "{{total}} başarımdan {{unlocked}} tanesi açıldı",
     "unlocked": "Açıldı",
     "progressA11y": "{{target}} üzerinden {{progress}}"
+  },
+  "wrapped": {
+    "title": "{{year}} Yıl Sonu Özeti",
+    "summary": "{{year}} yılında {{count}} tamamlandı",
+    "completed": "Tamamlanan",
+    "hoursSpent": "Harcanan Saat",
+    "busiestMonth": "En Yoğun Ay",
+    "topTitles": "Öne Çıkanlar",
+    "emptyHint": "Yıl sonu özetini görmek için bu yıl bir şeyler takip edip tamamla."
   }
 }

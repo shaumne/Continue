@@ -16,7 +16,14 @@
     "xp": "{{xp}} XP",
     "streak": "連続",
     "backlog": "積み",
-    "completed": "完了"
+    "completed": "完了",
+    "levelRingLabel": "レベル",
+    "levelRingA11y": "レベル {{level}}、次のレベルまで{{percent}}%",
+    "streakRingA11y": "{{streak}}日連続",
+    "wrapped": "今年の振り返り",
+    "timeBudget": "1日の時間予算",
+    "timeBudgetNotSet": "未設定",
+    "timeBudgetClear": "クリア"
   },
   "languages": {
     "en": "English",
@@ -39,7 +46,9 @@
     "letsDecide": "決めましょう",
     "emptyHint": "「コンテンツを追加」タブから追加して始めましょう。",
     "unitsLeft": "残り {{count}}",
-    "noTimeSet": "プロフィールで1日の時間を設定"
+    "noTimeSet": "プロフィールで1日の時間を設定",
+    "budgetHint": "今日の{{time}}に収まります",
+    "timeLeft": "~{{time}}"
   },
   "addContent": {
     "title": "コンテンツを追加",
@@ -123,5 +132,14 @@
     "summary": "{{total}}個中{{unlocked}}個解除済み",
     "unlocked": "解除済み",
     "progressA11y": "{{target}}個中{{progress}}個"
+  },
+  "wrapped": {
+    "title": "{{year}}年の振り返り",
+    "summary": "{{year}}年に{{count}}件完了",
+    "completed": "完了",
+    "hoursSpent": "費やした時間",
+    "busiestMonth": "最も活発だった月",
+    "topTitles": "トップタイトル",
+    "emptyHint": "振り返りを見るには、今年何かを記録して完了させましょう。"
   }
 }

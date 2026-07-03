@@ -16,7 +16,14 @@
     "xp": "{{xp}} XP",
     "streak": "Streak",
     "backlog": "Backlog",
-    "completed": "Completed"
+    "completed": "Completed",
+    "levelRingLabel": "Level",
+    "levelRingA11y": "Level {{level}}, {{percent}}% to next level",
+    "streakRingA11y": "{{streak}} day streak",
+    "wrapped": "Your Year Wrapped",
+    "timeBudget": "Daily Time Budget",
+    "timeBudgetNotSet": "Not set",
+    "timeBudgetClear": "Clear"
   },
   "languages": {
     "en": "English",
@@ -39,7 +46,9 @@
     "letsDecide": "Let's Decide",
     "emptyHint": "Add something from the Add Content tab to get started.",
     "unitsLeft": "{{count}} left",
-    "noTimeSet": "Set your daily time in Profile"
+    "noTimeSet": "Set your daily time in Profile",
+    "budgetHint": "Fits your {{time}} today",
+    "timeLeft": "~{{time}}"
   },
   "addContent": {
     "title": "Add Content",
@@ -123,5 +132,14 @@
     "summary": "{{unlocked}} of {{total}} unlocked",
     "unlocked": "Unlocked",
     "progressA11y": "{{progress}} of {{target}}"
+  },
+  "wrapped": {
+    "title": "{{year}} Wrapped",
+    "summary": "{{count}} completed in {{year}}",
+    "completed": "Completed",
+    "hoursSpent": "Hours Spent",
+    "busiestMonth": "Busiest Month",
+    "topTitles": "Top Titles",
+    "emptyHint": "Track and complete something this year to see your Wrapped."
   }
 }
