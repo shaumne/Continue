@@ -105,7 +105,9 @@
     "toggleToRegister": "アカウントがない場合は新規登録",
     "toggleToLogin": "すでにアカウントをお持ちの場合はログイン",
     "signOut": "ログアウト",
-    "checkEmail": "メールを確認してアドレスを認証してください。"
+    "checkEmail": "メールを確認してアドレスを認証してください。",
+    "or": "または",
+    "continueWithGoogle": "Googleで続ける"
   },
   "settings": {
     "language": "言語",

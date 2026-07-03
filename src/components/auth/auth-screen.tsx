@@ -1,3 +1,4 @@
+import { Ionicons } from '@expo/vector-icons';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -25,11 +26,13 @@ export function AuthScreen() {
 
   const signIn = useSession((s) => s.signIn);
   const signUp = useSession((s) => s.signUp);
+  const signInWithGoogle = useSession((s) => s.signInWithGoogle);
 
   const [mode, setMode] = useState<Mode>('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
 
   const isLogin = mode === 'login';
@@ -48,6 +51,15 @@ export function AuthScreen() {
       setMessage(t('auth.checkEmail'));
     }
     // On success with a session, the auth listener swaps this screen out.
+  }
+
+  async function onGoogle() {
+    setGoogleLoading(true);
+    setMessage(null);
+    const result = await signInWithGoogle();
+    setGoogleLoading(false);
+    if (result.error) setMessage(result.error);
+    // On success, the auth listener swaps this screen out.
   }
 
   return (
@@ -112,6 +124,33 @@ export function AuthScreen() {
               )}
             </Pressable>
 
+            <View style={styles.dividerRow}>
+              <View style={[styles.divider, { backgroundColor: c.backgroundSelected }]} />
+              <Text style={[styles.dividerText, { color: c.textSecondary }]}>
+                {t('auth.or')}
+              </Text>
+              <View style={[styles.divider, { backgroundColor: c.backgroundSelected }]} />
+            </View>
+
+            <Pressable
+              disabled={googleLoading || loading}
+              onPress={onGoogle}
+              style={[
+                styles.googleButton,
+                { backgroundColor: c.backgroundElement, opacity: googleLoading ? 0.6 : 1 },
+              ]}>
+              {googleLoading ? (
+                <ActivityIndicator color={c.text} />
+              ) : (
+                <>
+                  <Ionicons name="logo-google" size={18} color={c.text} />
+                  <Text style={[styles.googleText, { color: c.text }]}>
+                    {t('auth.continueWithGoogle')}
+                  </Text>
+                </>
+              )}
+            </Pressable>
+
             <Pressable
               onPress={() => {
                 setMode(isLogin ? 'register' : 'login');
@@ -156,6 +195,24 @@ const styles = StyleSheet.create({
     marginTop: Spacing.four,
   },
   buttonText: { color: '#fff', fontSize: 16, fontWeight: '600' },
+  dividerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.three,
+    marginTop: Spacing.four,
+  },
+  divider: { flex: 1, height: 1 },
+  dividerText: { fontSize: 13 },
+  googleButton: {
+    height: 50,
+    borderRadius: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: Spacing.two,
+    marginTop: Spacing.four,
+  },
+  googleText: { fontSize: 16, fontWeight: '600' },
   toggle: { alignItems: 'center', marginTop: Spacing.four },
   toggleText: { fontSize: 14, fontWeight: '500' },
 });

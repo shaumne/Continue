@@ -105,7 +105,9 @@
     "toggleToRegister": "Hesabın yok mu? Kayıt ol",
     "toggleToLogin": "Zaten hesabın var mı? Giriş yap",
     "signOut": "Çıkış yap",
-    "checkEmail": "E-postanı doğrulamak için gelen kutunu kontrol et."
+    "checkEmail": "E-postanı doğrulamak için gelen kutunu kontrol et.",
+    "or": "veya",
+    "continueWithGoogle": "Google ile devam et"
   },
   "settings": {
     "language": "Dil",

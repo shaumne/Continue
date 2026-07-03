@@ -21,5 +21,9 @@ export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey, {
     persistSession: true,
     // RN has no URL to parse; OAuth is handled via deep links, not URL detection.
     detectSessionInUrl: false,
+    // PKCE: the redirect returns a `code` we exchange for a session (see
+    // signInWithGoogle in src/store/session.ts). More secure than implicit on
+    // mobile, and the code verifier is persisted in AsyncStorage for us.
+    flowType: 'pkce',
   },
 });
