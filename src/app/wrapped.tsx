@@ -1,24 +1,46 @@
 import { Ionicons } from '@expo/vector-icons';
-import { Image } from 'expo-image';
+import { LinearGradient } from 'expo-linear-gradient';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import {
+  ActivityIndicator,
+  Pressable,
+  ScrollView,
+  Share,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { Donut } from '@/components/donut';
-import { TypeBadge } from '@/components/type-badge';
-import { Brand, Colors, Spacing } from '@/constants/theme';
+import { Astronaut } from '@/components/astronaut';
+import { Brand, Colors, ContentTypeColors, Spacing } from '@/constants/theme';
+import { useProfile } from '@/hooks/use-profile';
 import { useWrapped } from '@/hooks/use-wrapped';
 import { formatDuration } from '@/lib/format';
 import { useSession } from '@/store/session';
 
-/** Locale-aware month name, e.g. "March" / "Mart" / "3月". No new i18n keys needed. */
-function monthName(monthIndex: number, locale: string): string {
-  return new Intl.DateTimeFormat(locale, { month: 'long' }).format(new Date(2020, monthIndex, 1));
-}
+/** The four content types shown as rows in the hero card, mockup order. */
+const HERO_TYPES = ['game', 'movie', 'book', 'anime'] as const;
+
+type HeroType = (typeof HERO_TYPES)[number];
+
+const HERO_ICONS: Record<HeroType, keyof typeof Ionicons.glyphMap> = {
+  game: 'game-controller',
+  movie: 'film',
+  book: 'book',
+  anime: 'sparkles',
+};
+
+const HERO_LABEL_KEYS: Record<HeroType, string> = {
+  game: 'wrapped.games',
+  movie: 'wrapped.movies',
+  book: 'wrapped.books',
+  anime: 'wrapped.animeEpisodes',
+};
 
 export default function WrappedScreen() {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const c = Colors.dark;
   const { year: yearParam } = useLocalSearchParams<{ year?: string }>();
 
@@ -26,7 +48,26 @@ export default function WrappedScreen() {
   const year = yearParam ? parseInt(yearParam, 10) : new Date().getFullYear();
 
   const { data: wrapped, isLoading } = useWrapped(userId, year);
+  const { data: profile } = useProfile(userId);
   const isEmpty = !isLoading && wrapped.completedCount === 0 && wrapped.totalActivities === 0;
+
+  const longestStreak = profile?.longest_streak ?? 0;
+  // TODO real genre: no per-item genre data yet, so "top genre" is really
+  // the most-completed content type for the year.
+  const topGenreLabel = wrapped.byType.length ? t(`contentType.${wrapped.byType[0].type}`) : '—';
+
+  async function handleShare() {
+    const message = `${t('wrapped.title', { year })} — ${t('wrapped.summary', {
+      count: wrapped.completedCount,
+      year,
+    })}`;
+    try {
+      await Share.share({ message });
+    } catch {
+      // Share can reject on unsupported platforms (e.g. web without the
+      // Web Share API) — fail silently rather than crash.
+    }
+  }
 
   return (
     <SafeAreaView style={[styles.safe, { backgroundColor: c.background }]} edges={['top']}>
@@ -35,18 +76,21 @@ export default function WrappedScreen() {
           onPress={() => router.back()}
           hitSlop={8}
           accessibilityRole="button"
-          accessibilityLabel={t('detail.back')}>
-          <Ionicons name="arrow-back" size={24} color={c.text} />
+          accessibilityLabel={t('detail.back')}
+          style={styles.iconButton}>
+          <Ionicons name="arrow-back" size={22} color={c.text} />
         </Pressable>
-      </View>
-
-      <View style={styles.header}>
-        <Text style={[styles.title, { color: c.text }]}>{t('wrapped.title', { year })}</Text>
-        {!isLoading ? (
-          <Text style={[styles.summary, { color: c.textSecondary }]}>
-            {t('wrapped.summary', { count: wrapped.completedCount, year })}
-          </Text>
-        ) : null}
+        <Text style={[styles.navTitle, { color: c.text }]} numberOfLines={1}>
+          {t('wrapped.title', { year })}
+        </Text>
+        <Pressable
+          onPress={handleShare}
+          hitSlop={8}
+          accessibilityRole="button"
+          accessibilityLabel={t('common.share')}
+          style={styles.iconButton}>
+          <Ionicons name="share-outline" size={22} color={c.text} />
+        </Pressable>
       </View>
 
       {isLoading ? (
@@ -61,101 +105,67 @@ export default function WrappedScreen() {
         </View>
       ) : (
         <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+          <LinearGradient
+            colors={[Brand.primary, Brand.primaryMuted]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.heroCard}>
+            <Text style={styles.heroKicker}>{t('wrapped.heading')}</Text>
+            <Text style={styles.heroYear}>{year}</Text>
+
+            <View style={styles.heroBody}>
+              <View style={styles.mascotWrap}>
+                <Astronaut size={76} />
+              </View>
+              <View style={styles.heroStatList}>
+                {HERO_TYPES.map((type) => (
+                  <HeroStatRow
+                    key={type}
+                    type={type}
+                    count={wrapped.byType.find((entry) => entry.type === type)?.count ?? 0}
+                    label={t(HERO_LABEL_KEYS[type])}
+                  />
+                ))}
+              </View>
+            </View>
+          </LinearGradient>
+
           <View style={styles.tileRow}>
             <StatTile
-              label={t('wrapped.completed')}
-              value={wrapped.completedCount}
-              color={Brand.success}
-              c={c}
-            />
-            <StatTile
-              label={t('wrapped.hoursSpent')}
+              label={t('wrapped.totalTime')}
               value={formatDuration(wrapped.hoursSpent)}
               color={Brand.xp}
               c={c}
             />
+            <StatTile label={t('wrapped.topGenre')} value={topGenreLabel} color={Brand.primary} c={c} />
             <StatTile
-              label={t('wrapped.busiestMonth')}
-              value={
-                wrapped.busiestMonth != null ? monthName(wrapped.busiestMonth, i18n.language) : '—'
-              }
-              color={Brand.primary}
+              label={t('wrapped.longestStreak')}
+              value={`${longestStreak} ${t('wrapped.days')}`}
+              color={Brand.streak}
               c={c}
             />
           </View>
 
-          {wrapped.byType.length ? (
-            <View style={[styles.card, { backgroundColor: c.backgroundElement }]}>
-              <Text style={[styles.cardTitle, { color: c.text }]}>{t('stats.byType')}</Text>
-              <View style={styles.donutRow}>
-                <Donut
-                  size={140}
-                  strokeWidth={18}
-                  segments={wrapped.byType.map((entry) => ({
-                    value: entry.count,
-                    color: entry.color,
-                  }))}
-                  accessibilityLabel={t('stats.byTypeA11y', { count: wrapped.completedCount })}
-                  center={
-                    <View style={styles.donutCenter}>
-                      <Text style={[styles.donutTotal, { color: c.text }]}>
-                        {wrapped.completedCount}
-                      </Text>
-                      <Text style={[styles.donutTotalLabel, { color: c.textSecondary }]}>
-                        {t('stats.items')}
-                      </Text>
-                    </View>
-                  }
-                />
-                <View style={styles.legend}>
-                  {wrapped.byType.map((entry) => (
-                    <View key={entry.type} style={styles.legendRow}>
-                      <View style={[styles.dot, { backgroundColor: entry.color }]} />
-                      <Text style={[styles.legendLabel, { color: c.text }]} numberOfLines={1}>
-                        {t(`contentType.${entry.type}`)}
-                      </Text>
-                      <Text style={[styles.legendCount, { color: c.textSecondary }]}>
-                        {entry.count}
-                      </Text>
-                    </View>
-                  ))}
-                </View>
-              </View>
-            </View>
-          ) : null}
-
-          {wrapped.topItems.length ? (
-            <View style={[styles.card, { backgroundColor: c.backgroundElement }]}>
-              <Text style={[styles.cardTitle, { color: c.text }]}>{t('wrapped.topTitles')}</Text>
-              <View style={styles.topList}>
-                {wrapped.topItems.map((item) => (
-                  <View
-                    key={item.id}
-                    accessible
-                    accessibilityRole="summary"
-                    accessibilityLabel={`${item.title}. ${t(`contentType.${item.type}`)}`}
-                    style={[styles.topRow, { backgroundColor: c.backgroundSelected }]}>
-                    <Image
-                      source={item.cover_url}
-                      style={styles.cover}
-                      contentFit="cover"
-                      transition={150}
-                      accessibilityLabel={item.title}
-                    />
-                    <View style={styles.flex}>
-                      <Text style={[styles.rowTitle, { color: c.text }]} numberOfLines={1}>
-                        {item.title}
-                      </Text>
-                      <TypeBadge type={item.type} />
-                    </View>
-                  </View>
-                ))}
-              </View>
-            </View>
-          ) : null}
+          <Text style={[styles.tag, { color: Brand.primary }]}>{t('wrapped.tag')}</Text>
         </ScrollView>
       )}
     </SafeAreaView>
+  );
+}
+
+function HeroStatRow({ type, count, label }: { type: HeroType; count: number; label: string }) {
+  return (
+    <View
+      style={styles.heroStatRow}
+      accessible
+      accessibilityRole="summary"
+      accessibilityLabel={`${label}: ${count}`}>
+      <Ionicons name={HERO_ICONS[type]} size={16} color={ContentTypeColors[type]} />
+      <Text style={styles.heroStatLabel} numberOfLines={1}>
+        {label}
+      </Text>
+      <Text style={styles.heroStatValue}>{count}</Text>
+    </View>
   );
 }
 
@@ -189,12 +199,13 @@ const styles = StyleSheet.create({
   headerRow: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
     paddingHorizontal: Spacing.four,
     paddingTop: Spacing.two,
+    gap: Spacing.two,
   },
-  header: { paddingHorizontal: Spacing.four, marginTop: Spacing.two, gap: Spacing.half },
-  title: { fontSize: 26, fontWeight: '700' },
-  summary: { fontSize: 14 },
+  iconButton: { width: 24, alignItems: 'center' },
+  navTitle: { flex: 1, textAlign: 'center', fontSize: 17, fontWeight: '700' },
   center: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: Spacing.two },
   empty: { fontSize: 14, textAlign: 'center', paddingHorizontal: Spacing.five },
   content: {
@@ -203,30 +214,25 @@ const styles = StyleSheet.create({
     paddingBottom: Spacing.five,
     gap: Spacing.three,
   },
+  heroCard: { borderRadius: 20, padding: Spacing.four, gap: Spacing.half },
+  heroKicker: { fontSize: 15, fontWeight: '600', color: '#fff' },
+  heroYear: { fontSize: 32, fontWeight: '800', color: '#fff', marginBottom: Spacing.three },
+  heroBody: { flexDirection: 'row', alignItems: 'center', gap: Spacing.four },
+  mascotWrap: {
+    width: 88,
+    height: 88,
+    borderRadius: 44,
+    backgroundColor: 'rgba(255,255,255,0.14)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  heroStatList: { flex: 1, gap: Spacing.two, minWidth: 0 },
+  heroStatRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing.two },
+  heroStatLabel: { flex: 1, fontSize: 13, fontWeight: '600', color: 'rgba(255,255,255,0.85)' },
+  heroStatValue: { fontSize: 15, fontWeight: '800', color: '#fff' },
   tileRow: { flexDirection: 'row', gap: Spacing.two },
   tile: { flex: 1, borderRadius: 12, padding: Spacing.three, alignItems: 'center', gap: 2 },
-  tileValue: { fontSize: 20, fontWeight: '700' },
+  tileValue: { fontSize: 18, fontWeight: '700' },
   tileLabel: { fontSize: 12, textAlign: 'center' },
-  card: { borderRadius: 16, padding: Spacing.four, gap: Spacing.three },
-  cardTitle: { fontSize: 16, fontWeight: '700' },
-  donutRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing.four },
-  donutCenter: { alignItems: 'center' },
-  donutTotal: { fontSize: 24, fontWeight: '800' },
-  donutTotalLabel: { fontSize: 11 },
-  legend: { flex: 1, gap: Spacing.two },
-  legendRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing.two },
-  dot: { width: 8, height: 8, borderRadius: 4 },
-  legendLabel: { flex: 1, fontSize: 13, fontWeight: '600' },
-  legendCount: { fontSize: 13, fontWeight: '600' },
-  topList: { gap: Spacing.two },
-  topRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderRadius: 12,
-    padding: Spacing.two,
-    gap: Spacing.three,
-  },
-  flex: { flex: 1 },
-  cover: { width: 46, height: 66, borderRadius: 6, backgroundColor: '#0003' },
-  rowTitle: { fontSize: 15, fontWeight: '600', marginBottom: Spacing.one },
+  tag: { fontSize: 13, fontWeight: '700', textAlign: 'center', marginTop: Spacing.one },
 });
