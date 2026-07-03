@@ -25,8 +25,9 @@ import { useLanguage } from '@/store/language';
 import { useSession } from '@/store/session';
 import type { ContentType } from '@/types/models';
 
-// Only TMDB (movies + TV) is deployed so far; more types unlock as providers land.
-const TYPES: ContentType[] = ['movie', 'tv'];
+// TMDB (movie/tv), AniList (anime) and Google Books (book) need no secrets.
+// `game` (IGDB) unlocks once IGDB_CLIENT_ID / IGDB_CLIENT_SECRET are set.
+const TYPES: ContentType[] = ['movie', 'tv', 'anime', 'book'];
 
 export default function SearchScreen() {
   const { t } = useTranslation();
@@ -155,7 +156,12 @@ const styles = StyleSheet.create({
     marginTop: Spacing.three,
   },
   title: { fontSize: 26, fontWeight: '700' },
-  types: { flexDirection: 'row', gap: Spacing.two, marginTop: Spacing.three },
+  types: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: Spacing.two,
+    marginTop: Spacing.three,
+  },
   chip: {
     paddingHorizontal: Spacing.three,
     paddingVertical: Spacing.two,
