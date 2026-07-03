@@ -8,8 +8,9 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { HeroNight } from '@/components/hero-night';
 import { TypeBadge } from '@/components/type-badge';
 import { Brand, Colors, ContentTypeColors, Spacing } from '@/constants/theme';
-import { useLibrary } from '@/hooks/use-library';
+import { type LibraryItem, useLibrary } from '@/hooks/use-library';
 import { useProfile } from '@/hooks/use-profile';
+import { estimateRemainingMinutes, fitsBudget } from '@/lib/estimate';
 import { formatDuration } from '@/lib/format';
 import { useSession } from '@/store/session';
 
@@ -32,7 +33,30 @@ export default function HomeScreen() {
   function decide() {
     const pool = continueItems.length ? continueItems : items;
     if (!pool.length) return;
-    const pick = pool[Math.floor(Math.random() * pool.length)];
+
+    let pick: LibraryItem | undefined;
+    if (budget != null) {
+      const fitting = pool.filter((item) => fitsBudget(item, budget));
+      if (fitting.length) {
+        pick = fitting[Math.floor(Math.random() * fitting.length)];
+      } else {
+        // Nothing fits the remaining budget — fall back to the item with the
+        // smallest estimate, then to any random item if nothing has one.
+        const bySmallestEstimate = [...pool].sort((a, b) => {
+          const ea = estimateRemainingMinutes(a);
+          const eb = estimateRemainingMinutes(b);
+          if (ea == null && eb == null) return 0;
+          if (ea == null) return 1;
+          if (eb == null) return -1;
+          return ea - eb;
+        });
+        pick = bySmallestEstimate[0];
+      }
+    } else {
+      pick = pool[Math.floor(Math.random() * pool.length)];
+    }
+
+    if (!pick) return;
     router.push({ pathname: '/content/[id]', params: { id: pick.id } });
   }
 
@@ -67,9 +91,20 @@ export default function HomeScreen() {
           <View style={[styles.decideCard, { backgroundColor: c.backgroundElement }]}>
             <View style={styles.flex}>
               <Text style={[styles.decideTitle, { color: c.text }]}>{t('home.notSure')}</Text>
-              <Text style={[styles.decideHint, { color: c.textSecondary }]}>
-                {t('home.notSureHint')}
-              </Text>
+              {budget != null ? (
+                <Text style={[styles.decideHint, { color: c.textSecondary }]}>
+                  {t('home.budgetHint', { time: formatDuration(budget) })}
+                </Text>
+              ) : (
+                <Pressable
+                  onPress={() => router.push('/profile')}
+                  accessibilityRole="button"
+                  accessibilityLabel={t('home.noTimeSet')}>
+                  <Text style={[styles.decideHint, styles.decideHintLink, { color: c.textSecondary }]}>
+                    {t('home.noTimeSet')}
+                  </Text>
+                </Pressable>
+              )}
             </View>
             <Pressable onPress={decide} style={[styles.decideBtn, { backgroundColor: Brand.primary }]}>
               <Text style={styles.decideBtnText}>{t('home.letsDecide')}</Text>
@@ -82,6 +117,7 @@ export default function HomeScreen() {
           const hasProgress = item.progress_total && item.progress_current != null;
           const pct = hasProgress ? item.progress_current! / item.progress_total! : 0;
           const barColor = type ? ContentTypeColors[type] : Brand.primary;
+          const estimate = estimateRemainingMinutes(item);
           return (
             <Pressable
               onPress={() => router.push({ pathname: '/content/[id]', params: { id: item.id } })}
@@ -114,6 +150,14 @@ export default function HomeScreen() {
                     </Text>
                   ) : null}
                 </View>
+                {estimate != null ? (
+                  <View style={styles.estimateRow}>
+                    <Ionicons name="time-outline" size={12} color={c.textSecondary} />
+                    <Text style={[styles.estimateText, { color: c.textSecondary }]}>
+                      {t('home.timeLeft', { time: formatDuration(estimate) })}
+                    </Text>
+                  </View>
+                ) : null}
               </View>
             </Pressable>
           );
@@ -154,6 +198,13 @@ const styles = StyleSheet.create({
   cardBottom: { flexDirection: 'row', justifyContent: 'space-between', marginTop: Spacing.one },
   metaLeft: { fontSize: 12, fontWeight: '600' },
   metaRight: { fontSize: 12 },
+  estimateRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.half,
+    marginTop: Spacing.one,
+  },
+  estimateText: { fontSize: 11, fontWeight: '600' },
   decideCard: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -164,6 +215,7 @@ const styles = StyleSheet.create({
   },
   decideTitle: { fontSize: 15, fontWeight: '700' },
   decideHint: { fontSize: 13, marginTop: 2 },
+  decideHintLink: { textDecorationLine: 'underline' },
   decideBtn: {
     flexDirection: 'row',
     alignItems: 'center',
