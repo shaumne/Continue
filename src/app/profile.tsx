@@ -6,9 +6,9 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { saveDailyBudget } from '@/api/profile';
-import { Ring } from '@/components/ring';
 import { Brand, Colors, Spacing } from '@/constants/theme';
 import { SUPPORTED_LANGUAGES, type SupportedLanguage } from '@/i18n';
+import { useAchievements } from '@/hooks/use-achievements';
 import { useLibrary } from '@/hooks/use-library';
 import { useProfile } from '@/hooks/use-profile';
 import { formatDuration } from '@/lib/format';
@@ -16,12 +16,14 @@ import { queryClient } from '@/lib/query-client';
 import { useLanguage } from '@/store/language';
 import { useSession } from '@/store/session';
 
+// TODO: replace with the real level curve once game design settles on one;
+// for now every level is a flat 1000 XP band.
 const XP_PER_LEVEL = 1000;
-const RING_SIZE = 92;
-const RING_STROKE = 8;
 
 /** Presets shown as chips in the daily time budget setter, in minutes. */
 const BUDGET_PRESETS = [30, 60, 90, 120, 180];
+
+type ThemeColors = (typeof Colors)['dark'];
 
 export default function ProfileScreen() {
   const { t } = useTranslation();
@@ -33,6 +35,7 @@ export default function ProfileScreen() {
 
   const { data: profile } = useProfile(userId);
   const { data: items = [] } = useLibrary(userId);
+  const { unlockedCount: badges } = useAchievements(userId);
 
   const resolved = useLanguage((s) => s.resolved);
   const setLanguage = useLanguage((s) => s.setLanguage);
@@ -40,10 +43,9 @@ export default function ProfileScreen() {
   const xp = profile?.xp ?? 0;
   const level = profile?.level ?? 1;
   const streak = profile?.current_streak ?? 0;
-  const longestStreak = profile?.longest_streak ?? 0;
-  const intoLevel = xp % XP_PER_LEVEL;
-  const levelProgress = intoLevel / XP_PER_LEVEL;
-  const streakProgress = Math.min(streak / Math.max(longestStreak, 7), 1);
+  // Next 1000-XP threshold strictly above the current total.
+  const nextLevelXp = Math.ceil((xp + 1) / XP_PER_LEVEL) * XP_PER_LEVEL;
+  const xpProgress = Math.min(xp / nextLevelXp, 1);
   const backlog = items.filter((i) => i.status === 'backlog').length;
   const completed = items.filter((i) => i.status === 'completed').length;
 
@@ -87,86 +89,78 @@ export default function ProfileScreen() {
             <Text style={[styles.name, { color: c.text }]} numberOfLines={1}>
               {email.split('@')[0]}
             </Text>
-            <Text style={[styles.level, { color: Brand.primary }]}>
+            <Text style={[styles.level, { color: c.text }]}>
               {t('profile.level', { level })}
+            </Text>
+            <Text style={[styles.subtitle, { color: c.textSecondary }]}>
+              {t('profile.contentExplorer')}
             </Text>
           </View>
         </View>
 
-        <View style={styles.ringsRow}>
-          <View style={styles.ringItem}>
-            <Ring
-              size={RING_SIZE}
-              strokeWidth={RING_STROKE}
-              progress={levelProgress}
-              color={Brand.primary}
-              accessibilityLabel={t('profile.levelRingA11y', {
-                level,
-                percent: Math.round(levelProgress * 100),
-              })}>
-              <Text style={[styles.ringValue, { color: c.text }]}>{level}</Text>
-              <Text style={[styles.ringLabel, { color: c.textSecondary }]}>
-                {t('profile.levelRingLabel')}
-              </Text>
-            </Ring>
-          </View>
-          <View style={styles.ringItem}>
-            <Ring
-              size={RING_SIZE}
-              strokeWidth={RING_STROKE}
-              progress={streakProgress}
-              color={Brand.streak}
-              accessibilityLabel={t('profile.streakRingA11y', { streak })}>
-              <Text style={[styles.ringValue, { color: c.text }]}>{streak}</Text>
-              <Text style={[styles.ringLabel, { color: c.textSecondary }]}>
-                {t('profile.streak')}
-              </Text>
-            </Ring>
-          </View>
-        </View>
-
-        {/* XP progress within the current level */}
-        <View style={[styles.xpTrack, { backgroundColor: c.backgroundElement }]}>
+        {/* XP progress toward the next level */}
+        <View
+          style={[styles.xpTrack, { backgroundColor: c.backgroundElement }]}
+          accessibilityRole="progressbar"
+          accessibilityLabel={t('stats.levelProgressA11y', {
+            level,
+            percent: Math.round(xpProgress * 100),
+          })}>
           <View
             style={[
               styles.xpFill,
-              { width: `${(intoLevel / XP_PER_LEVEL) * 100}%`, backgroundColor: Brand.primary },
+              { width: `${xpProgress * 100}%`, backgroundColor: Brand.primary },
             ]}
           />
         </View>
         <Text style={[styles.xpText, { color: c.textSecondary }]}>
-          {t('profile.xp', { xp })}
+          {t('profile.xpProgress', { xp: xp.toLocaleString(), nextLevel: nextLevelXp.toLocaleString() })}
         </Text>
 
         <View style={styles.stats}>
           <Stat label={t('profile.streak')} value={streak} color={Brand.streak} c={c} />
-          <Stat label={t('profile.backlog')} value={backlog} color={Brand.primary} c={c} />
+          <Stat label={t('profile.badges')} value={badges} color={Brand.xp} c={c} />
+          <Stat label={t('profile.backlog')} value={backlog} color={Brand.success} c={c} />
           <Stat label={t('profile.completed')} value={completed} color={Brand.success} c={c} />
         </View>
 
-        <Pressable
-          onPress={() => router.push('/achievements')}
-          accessibilityRole="button"
-          accessibilityLabel={t('achievements.title')}
-          style={[styles.achievementsRow, { backgroundColor: c.backgroundElement }]}>
-          <Ionicons name="trophy" size={20} color={Brand.xp} />
-          <Text style={[styles.achievementsRowText, { color: c.text }]}>
-            {t('achievements.title')}
-          </Text>
-          <Ionicons name="chevron-forward" size={18} color={c.textSecondary} />
-        </Pressable>
-
-        <Pressable
-          onPress={() => router.push('/wrapped')}
-          accessibilityRole="button"
-          accessibilityLabel={t('profile.wrapped')}
-          style={[styles.achievementsRow, { backgroundColor: c.backgroundElement }]}>
-          <Ionicons name="gift" size={20} color={Brand.primary} />
-          <Text style={[styles.achievementsRowText, { color: c.text }]}>
-            {t('profile.wrapped')}
-          </Text>
-          <Ionicons name="chevron-forward" size={18} color={c.textSecondary} />
-        </Pressable>
+        <View style={styles.menu}>
+          <MenuRow
+            icon="trophy"
+            label={t('achievements.title')}
+            onPress={() => router.push('/achievements')}
+            iconColor={Brand.xp}
+            c={c}
+          />
+          <MenuRow
+            icon="flame"
+            label={t('streak.title')}
+            onPress={() => router.push('/streak')}
+            iconColor={Brand.streak}
+            c={c}
+          />
+          <MenuRow
+            icon="gift"
+            label={t('profile.wrapped')}
+            onPress={() => router.push('/wrapped')}
+            iconColor={Brand.primary}
+            c={c}
+          />
+          {/* TODO: link to a real Settings screen once one exists. */}
+          <MenuRow icon="settings-outline" label={t('profile.settings')} disabled c={c} />
+          {/* TODO: wire up once cloud backup/sync ships. */}
+          <MenuRow icon="cloud-outline" label={t('profile.backupSync')} disabled c={c} />
+          {/* TODO: wire up once import/export ships. */}
+          <MenuRow icon="swap-horizontal" label={t('profile.importExport')} disabled c={c} />
+          {/* TODO: wire up once in-app purchases ship. */}
+          <MenuRow
+            icon="star"
+            label={t('profile.getPremium')}
+            disabled
+            accentColor={Brand.xp}
+            c={c}
+          />
+        </View>
 
         <Text style={[styles.sectionLabel, { color: c.textSecondary }]}>
           {t('profile.timeBudget')}
@@ -254,13 +248,59 @@ function Stat({
   label: string;
   value: number;
   color: string;
-  c: (typeof Colors)['dark'];
+  c: ThemeColors;
 }) {
   return (
     <View style={[styles.stat, { backgroundColor: c.backgroundElement }]}>
       <Text style={[styles.statValue, { color }]}>{value}</Text>
       <Text style={[styles.statLabel, { color: c.textSecondary }]}>{label}</Text>
     </View>
+  );
+}
+
+/**
+ * One row in the profile menu list: leading icon, label, trailing chevron.
+ * Working destinations pass `onPress`; placeholders pass `disabled` and are
+ * dimmed with a "coming soon" accessibility hint instead of navigating.
+ */
+function MenuRow({
+  icon,
+  label,
+  onPress,
+  disabled,
+  iconColor,
+  accentColor,
+  c,
+}: {
+  icon: keyof typeof Ionicons.glyphMap;
+  label: string;
+  onPress?: () => void;
+  disabled?: boolean;
+  /** Icon-only tint, used for the working rows (achievements, streak, wrapped). */
+  iconColor?: string;
+  /** Icon + label tint, used to highlight "Get Premium". */
+  accentColor?: string;
+  c: ThemeColors;
+}) {
+  const { t } = useTranslation();
+  const textColor = accentColor ?? c.text;
+  const glyphColor = accentColor ?? iconColor ?? c.textSecondary;
+
+  return (
+    <Pressable
+      onPress={onPress}
+      disabled={disabled || !onPress}
+      accessibilityRole="button"
+      accessibilityLabel={disabled ? `${label}. ${t('common.comingSoon')}` : label}
+      accessibilityState={{ disabled: disabled || !onPress }}
+      style={[
+        styles.menuRow,
+        { backgroundColor: c.backgroundElement, opacity: disabled ? 0.5 : 1 },
+      ]}>
+      <Ionicons name={icon} size={20} color={glyphColor} />
+      <Text style={[styles.menuRowText, { color: textColor }]}>{label}</Text>
+      <Ionicons name="chevron-forward" size={18} color={c.textSecondary} />
+    </Pressable>
   );
 }
 
@@ -272,31 +312,31 @@ const styles = StyleSheet.create({
   avatar: { width: 56, height: 56, borderRadius: 28, alignItems: 'center', justifyContent: 'center' },
   avatarText: { color: '#fff', fontSize: 24, fontWeight: '700' },
   name: { fontSize: 20, fontWeight: '700' },
-  level: { fontSize: 14, fontWeight: '600', marginTop: 2 },
-  ringsRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-evenly',
-    marginTop: Spacing.two,
-  },
-  ringItem: { alignItems: 'center' },
-  ringValue: { fontSize: 22, fontWeight: '700' },
-  ringLabel: { fontSize: 11 },
+  level: { fontSize: 15, fontWeight: '600', marginTop: 2 },
+  subtitle: { fontSize: 13, marginTop: 1 },
   xpTrack: { height: 8, borderRadius: 4, overflow: 'hidden', marginTop: Spacing.two },
   xpFill: { height: 8, borderRadius: 4 },
   xpText: { fontSize: 12 },
-  stats: { flexDirection: 'row', gap: Spacing.two, marginTop: Spacing.two },
-  achievementsRow: {
+  stats: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.two, marginTop: Spacing.two },
+  stat: {
+    flexBasis: '22%',
+    flexGrow: 1,
+    borderRadius: 12,
+    padding: Spacing.three,
+    alignItems: 'center',
+    gap: 2,
+  },
+  statValue: { fontSize: 22, fontWeight: '700' },
+  statLabel: { fontSize: 12 },
+  menu: { gap: Spacing.two, marginTop: Spacing.two },
+  menuRow: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: Spacing.two,
     borderRadius: 12,
     padding: Spacing.three,
-    marginTop: Spacing.two,
   },
-  achievementsRowText: { flex: 1, fontSize: 15, fontWeight: '600' },
-  stat: { flex: 1, borderRadius: 12, padding: Spacing.three, alignItems: 'center', gap: 2 },
-  statValue: { fontSize: 22, fontWeight: '700' },
-  statLabel: { fontSize: 12 },
+  menuRowText: { flex: 1, fontSize: 15, fontWeight: '600' },
   sectionLabel: { fontSize: 13, marginTop: Spacing.four },
   timeBudgetValue: { fontSize: 20, fontWeight: '700', marginTop: Spacing.half },
   budgetRow: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.two, marginTop: Spacing.two },
