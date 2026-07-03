@@ -11,7 +11,7 @@ import { Brand, Colors, ContentTypeColors, Spacing } from '@/constants/theme';
 import { type LibraryItem, useLibrary } from '@/hooks/use-library';
 import { useProfile } from '@/hooks/use-profile';
 import { estimateRemainingMinutes, fitsBudget } from '@/lib/estimate';
-import { formatDuration } from '@/lib/format';
+import { formatDuration, splitAroundValue } from '@/lib/format';
 import { useSession } from '@/store/session';
 
 const IN_PROGRESS = new Set(['started', 'paused']);
@@ -29,6 +29,13 @@ export default function HomeScreen() {
 
   const continueItems = items.filter((i) => IN_PROGRESS.has(i.status));
   const budget = profile?.daily_time_budget_minutes ?? null;
+
+  // Split the (already-translated) greeting/time sentences around their
+  // interpolated values so the hero can render them in two typographic
+  // tiers, like the mockup — without hardcoding word order per locale.
+  const greeting = splitAroundValue(t('home.greeting', { name }), name);
+  const timeStr = budget ? formatDuration(budget) : '—';
+  const available = splitAroundValue(t('home.availableTime', { time: timeStr }), timeStr);
 
   function decide() {
     const pool = continueItems.length ? continueItems : items;
@@ -70,15 +77,27 @@ export default function HomeScreen() {
         ListHeaderComponent={
           <View>
             <HeroNight>
-              <Text style={styles.heroGreeting}>{t('home.greeting', { name })} 👋</Text>
+              <View>
+                <Text style={styles.heroGreetingLine1}>{greeting.before}</Text>
+                <Text style={styles.heroGreetingLine2}>
+                  {greeting.value || name}
+                  {greeting.after} 👋
+                </Text>
+              </View>
               <View style={styles.heroBottom}>
-                <Text style={styles.heroTime}>
-                  {t('home.availableTime', { time: budget ? formatDuration(budget) : '—' })}
+                <Text style={styles.heroTimeLabel}>{available.before.trim()}</Text>
+                <Text style={styles.heroTimeLine}>
+                  <Text style={styles.heroTimeAccent}>{available.value || timeStr}</Text>
+                  <Text style={styles.heroTimeSuffix}>{available.after}</Text>
                 </Text>
               </View>
             </HeroNight>
 
-            <Pressable style={styles.sectionRow} onPress={() => router.push('/library')}>
+            <Pressable
+              style={styles.sectionRow}
+              onPress={() => router.push('/library')}
+              accessibilityRole="button"
+              accessibilityLabel={t('home.continueTitle')}>
               <Text style={[styles.section, { color: c.text }]}>{t('home.continueTitle')}</Text>
               <Ionicons name="arrow-forward" size={20} color={c.textSecondary} />
             </Pressable>
@@ -88,12 +107,12 @@ export default function HomeScreen() {
           <Text style={[styles.empty, { color: c.textSecondary }]}>{t('home.emptyHint')}</Text>
         }
         ListFooterComponent={
-          <View style={[styles.decideCard, { backgroundColor: c.backgroundElement }]}>
+          <View style={[styles.decideCard, { backgroundColor: `${Brand.primary}26` }]}>
             <View style={styles.flex}>
               <Text style={[styles.decideTitle, { color: c.text }]}>{t('home.notSure')}</Text>
               {budget != null ? (
                 <Text style={[styles.decideHint, { color: c.textSecondary }]}>
-                  {t('home.budgetHint', { time: formatDuration(budget) })}
+                  {t('home.notSureHint')}
                 </Text>
               ) : (
                 <Pressable
@@ -106,9 +125,15 @@ export default function HomeScreen() {
                 </Pressable>
               )}
             </View>
-            <Pressable onPress={decide} style={[styles.decideBtn, { backgroundColor: Brand.primary }]}>
-              <Text style={styles.decideBtnText}>{t('home.letsDecide')}</Text>
-              <Ionicons name="dice" size={18} color="#fff" />
+            <Pressable
+              onPress={decide}
+              accessibilityRole="button"
+              accessibilityLabel={t('home.letsDecide')}
+              style={styles.decideAction}>
+              <View style={[styles.decideBtn, { backgroundColor: Brand.primary }]}>
+                <Text style={styles.decideBtnText}>{t('home.letsDecide')}</Text>
+              </View>
+              <Text style={styles.decideDice}>🎲</Text>
             </Pressable>
           </View>
         }
@@ -121,6 +146,8 @@ export default function HomeScreen() {
           return (
             <Pressable
               onPress={() => router.push({ pathname: '/content/[id]', params: { id: item.id } })}
+              accessibilityRole="button"
+              accessibilityLabel={item.content?.title ?? undefined}
               style={[styles.card, { backgroundColor: c.backgroundElement }]}>
               <Image
                 source={item.content?.cover_url}
@@ -135,29 +162,25 @@ export default function HomeScreen() {
                   </Text>
                   {type ? <TypeBadge type={type} /> : null}
                 </View>
-                <View style={[styles.track, { backgroundColor: c.backgroundSelected }]}>
-                  <View
-                    style={[styles.fill, { width: `${Math.round(pct * 100)}%`, backgroundColor: barColor }]}
-                  />
-                </View>
-                <View style={styles.cardBottom}>
-                  <Text style={[styles.metaLeft, { color: c.textSecondary }]}>
+                <View style={styles.cardMeta}>
+                  <Text style={[styles.metaLeft, { color: c.text }]} numberOfLines={1}>
                     {hasProgress ? `${Math.round(pct * 100)}%` : t(`status.${item.status}`)}
                   </Text>
-                  {hasProgress ? (
+                  {estimate != null ? (
+                    <Text style={[styles.metaRight, { color: c.textSecondary }]}>
+                      {t('home.timeLeft', { time: formatDuration(estimate) })}
+                    </Text>
+                  ) : hasProgress ? (
                     <Text style={[styles.metaRight, { color: c.textSecondary }]}>
                       {t('home.unitsLeft', { count: item.progress_total! - item.progress_current! })}
                     </Text>
                   ) : null}
                 </View>
-                {estimate != null ? (
-                  <View style={styles.estimateRow}>
-                    <Ionicons name="time-outline" size={12} color={c.textSecondary} />
-                    <Text style={[styles.estimateText, { color: c.textSecondary }]}>
-                      {t('home.timeLeft', { time: formatDuration(estimate) })}
-                    </Text>
-                  </View>
-                ) : null}
+                <View style={[styles.track, { backgroundColor: c.backgroundSelected }]}>
+                  <View
+                    style={[styles.fill, { width: `${Math.round(pct * 100)}%`, backgroundColor: barColor }]}
+                  />
+                </View>
               </View>
             </Pressable>
           );
@@ -169,10 +192,14 @@ export default function HomeScreen() {
 
 const styles = StyleSheet.create({
   safe: { flex: 1 },
-  content: { paddingHorizontal: Spacing.four, paddingBottom: Spacing.five, gap: Spacing.two },
-  heroGreeting: { color: '#fff', fontSize: 24, fontWeight: '800' },
-  heroBottom: { marginTop: 'auto' },
-  heroTime: { color: '#C9B6FF', fontSize: 18, fontWeight: '800' },
+  content: { paddingHorizontal: Spacing.four, paddingBottom: Spacing.five, gap: Spacing.three },
+  heroGreetingLine1: { color: 'rgba(255,255,255,0.85)', fontSize: 15, fontWeight: '500' },
+  heroGreetingLine2: { color: '#fff', fontSize: 26, fontWeight: '800', marginTop: 2 },
+  heroBottom: { marginTop: Spacing.four },
+  heroTimeLabel: { color: 'rgba(255,255,255,0.65)', fontSize: 13, fontWeight: '500' },
+  heroTimeLine: { marginTop: 2 },
+  heroTimeAccent: { color: '#C9B6FF', fontSize: 22, fontWeight: '800' },
+  heroTimeSuffix: { color: 'rgba(255,255,255,0.75)', fontSize: 15, fontWeight: '600' },
   sectionRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -186,43 +213,40 @@ const styles = StyleSheet.create({
   card: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderRadius: 14,
-    padding: Spacing.two,
+    borderRadius: 16,
+    padding: Spacing.three,
     gap: Spacing.three,
   },
-  cover: { width: 54, height: 76, borderRadius: 8, backgroundColor: '#0003' },
+  cover: { width: 68, height: 88, borderRadius: 12, backgroundColor: '#0003' },
   cardTop: { flexDirection: 'row', alignItems: 'center', gap: Spacing.two },
-  cardTitle: { flex: 1, fontSize: 15, fontWeight: '700' },
+  cardTitle: { flex: 1, fontSize: 16, fontWeight: '700' },
+  cardMeta: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: Spacing.two,
+  },
+  metaLeft: { fontSize: 15, fontWeight: '700' },
+  metaRight: { fontSize: 13, fontWeight: '500' },
   track: { height: 6, borderRadius: 3, overflow: 'hidden', marginTop: Spacing.two },
   fill: { height: 6, borderRadius: 3 },
-  cardBottom: { flexDirection: 'row', justifyContent: 'space-between', marginTop: Spacing.one },
-  metaLeft: { fontSize: 12, fontWeight: '600' },
-  metaRight: { fontSize: 12 },
-  estimateRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.half,
-    marginTop: Spacing.one,
-  },
-  estimateText: { fontSize: 11, fontWeight: '600' },
   decideCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderRadius: 14,
+    borderRadius: 18,
     padding: Spacing.four,
-    marginTop: Spacing.three,
+    marginTop: Spacing.one,
     gap: Spacing.three,
   },
-  decideTitle: { fontSize: 15, fontWeight: '700' },
+  decideTitle: { fontSize: 16, fontWeight: '700' },
   decideHint: { fontSize: 13, marginTop: 2 },
   decideHintLink: { textDecorationLine: 'underline' },
+  decideAction: { flexDirection: 'row', alignItems: 'center', gap: Spacing.two },
   decideBtn: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.two,
     paddingHorizontal: Spacing.three,
     paddingVertical: Spacing.two,
-    borderRadius: 10,
+    borderRadius: 12,
   },
   decideBtnText: { color: '#fff', fontSize: 14, fontWeight: '700' },
+  decideDice: { fontSize: 26 },
 });

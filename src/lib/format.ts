@@ -7,3 +7,25 @@ export function formatDuration(minutes: number | null | undefined): string {
   if (h) return `${h}h`;
   return `${m}m`;
 }
+
+/**
+ * Splits a translated, already-interpolated string around a known
+ * substring (the resolved value of an i18n `{{placeholder}}`) so callers
+ * can render the surrounding text and the value in different styles —
+ * without hardcoding word order, which varies by locale.
+ *
+ * Falls back to putting everything in `before` when the value isn't found
+ * (e.g. an empty string), so rendering degrades gracefully.
+ */
+export function splitAroundValue(
+  text: string,
+  value: string,
+): { before: string; value: string; after: string } {
+  const idx = value ? text.indexOf(value) : -1;
+  if (idx === -1) return { before: text, value: '', after: '' };
+  return {
+    before: text.slice(0, idx),
+    value,
+    after: text.slice(idx + value.length),
+  };
+}
