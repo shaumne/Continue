@@ -1,5 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -22,12 +23,26 @@ function iconFor(icon: string | null): IoniconName {
   return (icon && ICON_MAP[icon]) || 'trophy';
 }
 
+type FilterTab = 'all' | 'locked' | 'unlocked';
+
+const FILTER_TABS: FilterTab[] = ['all', 'locked', 'unlocked'];
+
+const MEDALLION_SIZE = 48;
+
 export default function AchievementsScreen() {
   const { t } = useTranslation();
   const c = Colors.dark;
 
   const userId = useSession((s) => s.session?.user.id);
   const { items, unlockedCount, total, isLoading } = useAchievements(userId);
+
+  const [filter, setFilter] = useState<FilterTab>('all');
+
+  const filteredItems = items.filter((item) => {
+    if (filter === 'locked') return !item.unlocked;
+    if (filter === 'unlocked') return item.unlocked;
+    return true;
+  });
 
   return (
     <SafeAreaView style={[styles.safe, { backgroundColor: c.background }]} edges={['top']}>
@@ -50,26 +65,51 @@ export default function AchievementsScreen() {
         ) : null}
       </View>
 
+      <View
+        style={[styles.segmented, { backgroundColor: c.backgroundElement }]}
+        accessibilityRole="tablist">
+        {FILTER_TABS.map((tab) => {
+          const active = tab === filter;
+          return (
+            <Pressable
+              key={tab}
+              onPress={() => setFilter(tab)}
+              style={[styles.segment, active && { backgroundColor: Brand.primary }]}
+              accessibilityRole="tab"
+              accessibilityState={{ selected: active }}
+              accessibilityLabel={t(`achievements.${tab}`)}>
+              <Text
+                style={[styles.segmentLabel, { color: active ? '#fff' : c.textSecondary }]}>
+                {t(`achievements.${tab}`)}
+              </Text>
+            </Pressable>
+          );
+        })}
+      </View>
+
       {isLoading ? (
         <View style={styles.center}>
           <ActivityIndicator color={Brand.primary} />
         </View>
       ) : (
         <FlatList
-          data={items}
+          data={filteredItems}
           keyExtractor={(item) => item.id}
-          numColumns={2}
-          columnWrapperStyle={styles.row}
-          contentContainerStyle={styles.grid}
+          contentContainerStyle={styles.list}
           showsVerticalScrollIndicator={false}
-          renderItem={({ item }) => <AchievementCard item={item} c={c} />}
+          ListEmptyComponent={
+            <Text style={[styles.empty, { color: c.textSecondary }]} accessibilityRole="text">
+              {t('common.empty')}
+            </Text>
+          }
+          renderItem={({ item }) => <AchievementRow item={item} c={c} />}
         />
       )}
     </SafeAreaView>
   );
 }
 
-function AchievementCard({ item, c }: { item: AchievementVM; c: (typeof Colors)['dark'] }) {
+function AchievementRow({ item, c }: { item: AchievementVM; c: (typeof Colors)['dark'] }) {
   const { t } = useTranslation();
   const pct = item.target > 0 ? Math.min(item.progress / item.target, 1) : 0;
 
@@ -82,49 +122,58 @@ function AchievementCard({ item, c }: { item: AchievementVM; c: (typeof Colors)[
 
   return (
     <View
-      style={[styles.card, { backgroundColor: c.backgroundElement }, !item.unlocked && styles.cardLocked]}
+      style={[styles.card, { backgroundColor: c.backgroundElement }]}
       accessible
       accessibilityRole="summary"
       accessibilityLabel={a11yLabel}>
-      <View
-        style={[
-          styles.medallion,
-          { backgroundColor: item.unlocked ? Brand.xp : c.backgroundSelected },
-        ]}>
-        <Ionicons
-          name={iconFor(item.icon)}
-          size={26}
-          color={item.unlocked ? '#fff' : c.textSecondary}
-        />
-        {item.unlocked ? (
-          <View style={[styles.check, { backgroundColor: Brand.success }]}>
-            <Ionicons name="checkmark" size={12} color="#fff" />
+      <View style={styles.cardTop}>
+        <View
+          style={[
+            styles.medallion,
+            { backgroundColor: item.unlocked ? Brand.xp : c.backgroundSelected },
+          ]}>
+          <Ionicons
+            name={iconFor(item.icon)}
+            size={24}
+            color={item.unlocked ? '#fff' : c.textSecondary}
+          />
+        </View>
+
+        <View style={styles.textCol}>
+          <Text
+            style={[styles.cardTitle, { color: item.unlocked ? c.text : c.textSecondary }]}
+            numberOfLines={1}>
+            {item.title}
+          </Text>
+          {item.description ? (
+            <Text style={[styles.cardDesc, { color: c.textSecondary }]} numberOfLines={1}>
+              {item.description}
+            </Text>
+          ) : null}
+        </View>
+
+        {!item.unlocked ? (
+          <View style={styles.rightCol}>
+            <Ionicons
+              name="lock-closed"
+              size={14}
+              color={c.textSecondary}
+              accessibilityElementsHidden
+              importantForAccessibility="no"
+            />
+            <Text style={[styles.progressText, { color: c.textSecondary }]}>
+              {item.progress} / {item.target}
+            </Text>
           </View>
         ) : null}
       </View>
 
-      <Text
-        style={[styles.cardTitle, { color: item.unlocked ? c.text : c.textSecondary }]}
-        numberOfLines={1}>
-        {item.title}
-      </Text>
-      {item.description ? (
-        <Text style={[styles.cardDesc, { color: c.textSecondary }]} numberOfLines={2}>
-          {item.description}
-        </Text>
-      ) : null}
-
       {!item.unlocked ? (
-        <>
-          <View style={[styles.track, { backgroundColor: c.backgroundSelected }]}>
-            <View
-              style={[styles.fill, { width: `${pct * 100}%`, backgroundColor: Brand.primary }]}
-            />
-          </View>
-          <Text style={[styles.progressText, { color: c.textSecondary }]}>
-            {t('achievements.progressA11y', { progress: item.progress, target: item.target })}
-          </Text>
-        </>
+        <View style={[styles.track, { backgroundColor: c.backgroundSelected }]}>
+          <View
+            style={[styles.fill, { width: `${pct * 100}%`, backgroundColor: Brand.primary }]}
+          />
+        </View>
       ) : null}
     </View>
   );
@@ -142,36 +191,43 @@ const styles = StyleSheet.create({
   title: { fontSize: 26, fontWeight: '700' },
   summary: { fontSize: 14 },
   center: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-  grid: { padding: Spacing.four, gap: Spacing.three },
-  row: { gap: Spacing.three },
-  card: {
+  empty: { fontSize: 14, textAlign: 'center', paddingTop: Spacing.five },
+
+  segmented: {
+    flexDirection: 'row',
+    borderRadius: 999,
+    padding: Spacing.half,
+    marginHorizontal: Spacing.four,
+    marginTop: Spacing.three,
+  },
+  segment: {
     flex: 1,
-    borderRadius: 16,
-    padding: Spacing.three,
-    gap: Spacing.one,
+    paddingVertical: Spacing.two,
+    borderRadius: 999,
+    alignItems: 'center',
   },
-  cardLocked: { opacity: 0.85 },
+  segmentLabel: { fontSize: 13, fontWeight: '700' },
+
+  list: { padding: Spacing.four, gap: Spacing.three },
+  card: { borderRadius: 16, padding: Spacing.three, gap: Spacing.two },
+  cardTop: { flexDirection: 'row', alignItems: 'center', gap: Spacing.three },
   medallion: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: Spacing.one,
-  },
-  check: {
-    position: 'absolute',
-    right: -2,
-    bottom: -2,
-    width: 18,
-    height: 18,
-    borderRadius: 9,
+    width: MEDALLION_SIZE,
+    height: MEDALLION_SIZE,
+    borderRadius: MEDALLION_SIZE / 2,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  cardTitle: { fontSize: 14, fontWeight: '700' },
-  cardDesc: { fontSize: 12, lineHeight: 16 },
-  track: { height: 6, borderRadius: 3, overflow: 'hidden', marginTop: Spacing.one },
-  fill: { height: 6, borderRadius: 3 },
-  progressText: { fontSize: 11, marginTop: 2 },
+  textCol: { flex: 1, gap: Spacing.half },
+  cardTitle: { fontSize: 15, fontWeight: '700' },
+  cardDesc: { fontSize: 12 },
+  rightCol: { alignItems: 'flex-end', gap: Spacing.half },
+  progressText: { fontSize: 13, fontWeight: '600' },
+  track: {
+    height: 5,
+    borderRadius: 3,
+    overflow: 'hidden',
+    marginLeft: MEDALLION_SIZE + Spacing.three,
+  },
+  fill: { height: 5, borderRadius: 3 },
 });
