@@ -16,11 +16,12 @@ export const Colors = {
     textSecondary: '#60646C',
   },
   dark: {
+    // Deep navy base to match the design mockup (not pure black).
     text: '#ffffff',
-    background: '#000000',
-    backgroundElement: '#212225',
-    backgroundSelected: '#2E3135',
-    textSecondary: '#B0B4BA',
+    background: '#0B0F1A',
+    backgroundElement: '#161C2E',
+    backgroundSelected: '#232A42',
+    textSecondary: '#8E94A8',
   },
 } as const;
 
