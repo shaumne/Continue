@@ -2,6 +2,9 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
 import { corsHeaders, jsonResponse } from './_shared/cors.ts';
 import { ApiError } from './_shared/errors.ts';
+import { anilist } from './providers/anilist.ts';
+import { googleBooks } from './providers/googlebooks.ts';
+import { igdb } from './providers/igdb.ts';
 import { tmdb } from './providers/tmdb.ts';
 import type { ContentType, NormalizedItem, Provider } from './types.ts';
 
@@ -9,6 +12,9 @@ import type { ContentType, NormalizedItem, Provider } from './types.ts';
 const PROVIDERS: Partial<Record<ContentType, Provider>> = {
   movie: tmdb,
   tv: tmdb,
+  anime: anilist,
+  book: googleBooks,
+  game: igdb,
 };
 
 interface RequestBody {
