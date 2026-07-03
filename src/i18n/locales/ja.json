@@ -9,7 +9,8 @@
     "error": "問題が発生しました",
     "empty": "まだ何もありません",
     "seeAll": "すべて見る",
-    "comingSoon": "近日公開"
+    "comingSoon": "近日公開",
+    "share": "共有"
   },
   "profile": {
     "level": "レベル {{level}}",
@@ -23,7 +24,14 @@
     "wrapped": "今年の振り返り",
     "timeBudget": "1日の時間予算",
     "timeBudgetNotSet": "未設定",
-    "timeBudgetClear": "クリア"
+    "timeBudgetClear": "クリア",
+    "contentExplorer": "コンテンツ探検家",
+    "badges": "バッジ",
+    "xpProgress": "{{xp}} / {{nextLevel}} XP",
+    "settings": "設定",
+    "backupSync": "バックアップと同期",
+    "importExport": "インポート／エクスポート",
+    "getPremium": "プレミアムにアップグレード"
   },
   "languages": {
     "en": "English",
@@ -80,7 +88,21 @@
     "rating": "評価",
     "notes": "メモ",
     "editTitle": "進捗を更新",
-    "close": "閉じる"
+    "close": "閉じる",
+    "played": "{{time}}プレイ",
+    "estimate": "予想 {{time}}",
+    "lastPlayed": "最終プレイ日",
+    "genre": "ジャンル",
+    "continue": "続ける",
+    "tabProgress": "進捗",
+    "tabInfo": "情報",
+    "tabNotes": "メモ",
+    "tabActivity": "アクティビティ",
+    "mainStory": "メインストーリー",
+    "sideContent": "サブコンテンツ",
+    "trophies": "トロフィー",
+    "today": "今日",
+    "yesterday": "昨日"
   },
   "contentType": {
     "game": "ゲーム",
@@ -141,17 +163,22 @@
     "mostConsumedGenres": "よく利用するジャンル"
   },
   "quests": {
-    "daily": "デイリークエスト",
-    "weekly": "ウィークリークエスト",
+    "daily": "デイリー",
+    "weekly": "ウィークリー",
     "emptyHint": "現在利用できるクエストはありません。",
     "xpReward": "+{{xp}} XP",
-    "completed": "完了"
+    "completed": "完了",
+    "challenges": "チャレンジ",
+    "challengesSoon": "チャレンジは近日公開予定です。また後で確認してください！",
+    "completeAllDaily": "すべてのデイリークエストを完了する"
   },
   "achievements": {
     "title": "実績",
     "summary": "{{total}}個中{{unlocked}}個解除済み",
     "unlocked": "解除済み",
-    "progressA11y": "{{target}}個中{{progress}}個"
+    "progressA11y": "{{target}}個中{{progress}}個",
+    "all": "すべて",
+    "locked": "未解除"
   },
   "wrapped": {
     "title": "{{year}}年の振り返り",
@@ -160,6 +187,26 @@
     "hoursSpent": "費やした時間",
     "busiestMonth": "最も活発だった月",
     "topTitles": "トップタイトル",
-    "emptyHint": "振り返りを見るには、今年何かを記録して完了させましょう。"
+    "emptyHint": "振り返りを見るには、今年何かを記録して完了させましょう。",
+    "games": "ゲーム",
+    "movies": "映画",
+    "books": "本",
+    "animeEpisodes": "アニメのエピソード",
+    "totalTime": "合計時間",
+    "topGenre": "トップジャンル",
+    "longestStreak": "最長連続記録",
+    "heading": "マイContinue Wrapped",
+    "tag": "#ContinueWrapped",
+    "days": "日"
+  },
+  "streak": {
+    "title": "連続記録",
+    "days": "日",
+    "keepItUp": "その調子！",
+    "bestStreak": "最長記録：{{days}}日",
+    "previousMonth": "前月",
+    "nextMonth": "翌月",
+    "today": "今日",
+    "activeDay": "活動日"
   }
 }

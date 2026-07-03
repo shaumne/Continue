@@ -9,7 +9,8 @@
     "error": "Bir şeyler ters gitti",
     "empty": "Burada henüz bir şey yok",
     "seeAll": "Tümünü gör",
-    "comingSoon": "Yakında"
+    "comingSoon": "Yakında",
+    "share": "Paylaş"
   },
   "profile": {
     "level": "Seviye {{level}}",
@@ -23,7 +24,14 @@
     "wrapped": "Yıl Sonu Özetin",
     "timeBudget": "Günlük Zaman Bütçesi",
     "timeBudgetNotSet": "Ayarlanmadı",
-    "timeBudgetClear": "Temizle"
+    "timeBudgetClear": "Temizle",
+    "contentExplorer": "İçerik Kâşifi",
+    "badges": "Rozetler",
+    "xpProgress": "{{xp}} / {{nextLevel}} XP",
+    "settings": "Ayarlar",
+    "backupSync": "Yedekleme ve Senkronizasyon",
+    "importExport": "İçe / Dışa Aktar",
+    "getPremium": "Premium'a Geç"
   },
   "languages": {
     "en": "English",
@@ -80,7 +88,21 @@
     "rating": "Puan",
     "notes": "Notlar",
     "editTitle": "İlerlemeyi güncelle",
-    "close": "Kapat"
+    "close": "Kapat",
+    "played": "{{time}} oynandı",
+    "estimate": "Tahmini {{time}}",
+    "lastPlayed": "Son Oynanan",
+    "genre": "Tür",
+    "continue": "Devam Et",
+    "tabProgress": "İlerleme",
+    "tabInfo": "Bilgi",
+    "tabNotes": "Notlar",
+    "tabActivity": "Etkinlik",
+    "mainStory": "Ana Hikaye",
+    "sideContent": "Yan İçerik",
+    "trophies": "Kupalar",
+    "today": "Bugün",
+    "yesterday": "Dün"
   },
   "contentType": {
     "game": "Oyun",
@@ -141,17 +163,22 @@
     "mostConsumedGenres": "En Çok Tüketilen Türler"
   },
   "quests": {
-    "daily": "Günlük Görevler",
-    "weekly": "Haftalık Görevler",
+    "daily": "Günlük",
+    "weekly": "Haftalık",
     "emptyHint": "Şu anda kullanılabilir görev yok.",
     "xpReward": "+{{xp}} XP",
-    "completed": "Tamamlandı"
+    "completed": "Tamamlandı",
+    "challenges": "Meydan Okumalar",
+    "challengesSoon": "Meydan okumalar yakında geliyor. Daha sonra tekrar bak!",
+    "completeAllDaily": "Tüm günlük görevleri tamamla"
   },
   "achievements": {
     "title": "Başarımlar",
     "summary": "{{total}} başarımdan {{unlocked}} tanesi açıldı",
     "unlocked": "Açıldı",
-    "progressA11y": "{{target}} üzerinden {{progress}}"
+    "progressA11y": "{{target}} üzerinden {{progress}}",
+    "all": "Tümü",
+    "locked": "Kilitli"
   },
   "wrapped": {
     "title": "{{year}} Yıl Sonu Özeti",
@@ -160,6 +187,26 @@
     "hoursSpent": "Harcanan Saat",
     "busiestMonth": "En Yoğun Ay",
     "topTitles": "Öne Çıkanlar",
-    "emptyHint": "Yıl sonu özetini görmek için bu yıl bir şeyler takip edip tamamla."
+    "emptyHint": "Yıl sonu özetini görmek için bu yıl bir şeyler takip edip tamamla.",
+    "games": "Oyunlar",
+    "movies": "Filmler",
+    "books": "Kitaplar",
+    "animeEpisodes": "Anime Bölümleri",
+    "totalTime": "Toplam Süre",
+    "topGenre": "En Çok Tüketilen Tür",
+    "longestStreak": "En Uzun Seri",
+    "heading": "Continue Yıl Sonu Özetim",
+    "tag": "#ContinueWrapped",
+    "days": "Gün"
+  },
+  "streak": {
+    "title": "Seri",
+    "days": "Gün",
+    "keepItUp": "Böyle devam et!",
+    "bestStreak": "En iyi seri: {{days}} gün",
+    "previousMonth": "Önceki ay",
+    "nextMonth": "Sonraki ay",
+    "today": "Bugün",
+    "activeDay": "Aktif gün"
   }
 }

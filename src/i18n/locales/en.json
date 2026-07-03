@@ -9,7 +9,8 @@
     "error": "Something went wrong",
     "empty": "Nothing here yet",
     "seeAll": "See all",
-    "comingSoon": "Coming soon"
+    "comingSoon": "Coming soon",
+    "share": "Share"
   },
   "profile": {
     "level": "Level {{level}}",
@@ -23,7 +24,14 @@
     "wrapped": "Your Year Wrapped",
     "timeBudget": "Daily Time Budget",
     "timeBudgetNotSet": "Not set",
-    "timeBudgetClear": "Clear"
+    "timeBudgetClear": "Clear",
+    "contentExplorer": "Content Explorer",
+    "badges": "Badges",
+    "xpProgress": "{{xp}} / {{nextLevel}} XP",
+    "settings": "Settings",
+    "backupSync": "Backup & Sync",
+    "importExport": "Import / Export",
+    "getPremium": "Get Premium"
   },
   "languages": {
     "en": "English",
@@ -80,7 +88,21 @@
     "rating": "Rating",
     "notes": "Notes",
     "editTitle": "Update progress",
-    "close": "Close"
+    "close": "Close",
+    "played": "{{time}} played",
+    "estimate": "{{time}} estimate",
+    "lastPlayed": "Last Played",
+    "genre": "Genre",
+    "continue": "Continue",
+    "tabProgress": "Progress",
+    "tabInfo": "Info",
+    "tabNotes": "Notes",
+    "tabActivity": "Activity",
+    "mainStory": "Main Story",
+    "sideContent": "Side Content",
+    "trophies": "Trophies",
+    "today": "Today",
+    "yesterday": "Yesterday"
   },
   "contentType": {
     "game": "Game",
@@ -141,17 +163,22 @@
     "mostConsumedGenres": "Most Consumed Genres"
   },
   "quests": {
-    "daily": "Daily Quests",
-    "weekly": "Weekly Quests",
+    "daily": "Daily",
+    "weekly": "Weekly",
     "emptyHint": "No quests available right now.",
     "xpReward": "+{{xp}} XP",
-    "completed": "Completed"
+    "completed": "Completed",
+    "challenges": "Challenges",
+    "challengesSoon": "Challenges are coming soon. Check back later!",
+    "completeAllDaily": "Complete all daily quests"
   },
   "achievements": {
     "title": "Achievements",
     "summary": "{{unlocked}} of {{total}} unlocked",
     "unlocked": "Unlocked",
-    "progressA11y": "{{progress}} of {{target}}"
+    "progressA11y": "{{progress}} of {{target}}",
+    "all": "All",
+    "locked": "Locked"
   },
   "wrapped": {
     "title": "{{year}} Wrapped",
@@ -160,6 +187,26 @@
     "hoursSpent": "Hours Spent",
     "busiestMonth": "Busiest Month",
     "topTitles": "Top Titles",
-    "emptyHint": "Track and complete something this year to see your Wrapped."
+    "emptyHint": "Track and complete something this year to see your Wrapped.",
+    "games": "Games",
+    "movies": "Movies",
+    "books": "Books",
+    "animeEpisodes": "Anime Episodes",
+    "totalTime": "Total Time",
+    "topGenre": "Top Genre",
+    "longestStreak": "Longest Streak",
+    "heading": "My Continue Wrapped",
+    "tag": "#ContinueWrapped",
+    "days": "Days"
+  },
+  "streak": {
+    "title": "Streak",
+    "days": "Days",
+    "keepItUp": "Keep it up!",
+    "bestStreak": "Best streak: {{days}} days",
+    "previousMonth": "Previous month",
+    "nextMonth": "Next month",
+    "today": "Today",
+    "activeDay": "Active day"
   }
 }
