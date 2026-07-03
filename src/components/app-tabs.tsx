@@ -3,7 +3,7 @@ import { Tabs } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import type { ColorValue } from 'react-native';
 
-import { Brand, Colors } from '@/constants/theme';
+import { Brand, Colors, Spacing } from '@/constants/theme';
 
 type IoniconName = keyof typeof Ionicons.glyphMap;
 
@@ -26,6 +26,14 @@ export default function AppTabs() {
         tabBarStyle: {
           backgroundColor: c.background,
           borderTopColor: c.backgroundElement,
+          borderTopWidth: 1,
+          paddingTop: Spacing.two,
+          paddingBottom: Spacing.two,
+          height: 56 + Spacing.four,
+        },
+        tabBarLabelStyle: {
+          fontSize: 11,
+          fontWeight: '500',
         },
       }}>
       <Tabs.Screen
@@ -56,6 +64,8 @@ export default function AppTabs() {
       <Tabs.Screen name="achievements" options={{ href: null }} />
       {/* Wrapped is a pushed full-page route, not a tab. */}
       <Tabs.Screen name="wrapped" options={{ href: null }} />
+      {/* Streak is reached via a link in Profile, not a tab. */}
+      <Tabs.Screen name="streak" options={{ href: null }} />
     </Tabs>
   );
 }
