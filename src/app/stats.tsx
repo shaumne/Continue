@@ -7,6 +7,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Donut } from '@/components/donut';
 import { Brand, Colors, ContentTypeColors, Spacing } from '@/constants/theme';
 import { useStats } from '@/hooks/use-stats';
+import { formatDuration } from '@/lib/format';
 import { useSession } from '@/store/session';
 
 type StatsWindow = 'week' | 'month' | 'year' | 'allTime';
@@ -36,6 +37,7 @@ export default function StatsScreen() {
   const [year, setYear] = useState(() => new Date().getFullYear());
 
   const isEmpty = !stats.isLoading && stats.total === 0;
+  const genresTotal = stats.genres.reduce((sum, entry) => sum + entry.count, 0);
 
   const tiles: {
     type: 'game' | 'movie' | 'book' | 'anime';
@@ -115,48 +117,77 @@ export default function StatsScreen() {
             </View>
 
             <View style={styles.tileRow}>
-              {/* TODO: `useLibrary` doesn't select `time_spent_minutes` yet, so
-                  total time / average-per-day can't be derived client-side.
-                  Needs a data-hook extension (flagged to the hook owner). */}
-              <PlainTile label={t('stats.totalTime')} value="—" c={c} />
-              <PlainTile label={t('stats.avgPerDay')} value="—" c={c} />
+              <PlainTile
+                label={t('stats.totalTime')}
+                value={formatDuration(stats.totalMinutes)}
+                c={c}
+              />
+              <PlainTile
+                label={t('stats.avgPerDay')}
+                value={formatDuration(Math.round(stats.avgMinutesPerDay))}
+                c={c}
+              />
             </View>
 
             <View style={[styles.card, { backgroundColor: c.backgroundElement }]}>
               <Text style={[styles.cardTitle, { color: c.text }]}>
                 {t('stats.mostConsumedGenres')}
               </Text>
-              {/* TODO: this is a by-content-type breakdown, not real genres —
-                  `content_items.metadata.genres` isn't selected by
-                  `useLibrary` yet. Swap in a true genre aggregation once that
-                  field is available (data-hook/schema change, out of scope
-                  here). */}
-              <View style={styles.donutRow}>
-                <Donut
-                  size={130}
-                  strokeWidth={20}
-                  segments={stats.byType.map((entry) => ({
-                    value: entry.count,
-                    color: entry.color,
-                  }))}
-                  accessibilityLabel={t('stats.byTypeA11y', { count: stats.total })}
-                />
-                <View style={styles.legend}>
-                  {stats.byType.map((entry) => (
-                    <View key={entry.type} style={styles.legendRow}>
-                      <View style={[styles.dot, { backgroundColor: entry.color }]} />
-                      <Text
-                        style={[styles.legendLabel, { color: c.text }]}
-                        numberOfLines={1}>
-                        {t(`contentType.${entry.type}`)}
-                      </Text>
-                      <Text style={[styles.legendPercent, { color: c.textSecondary }]}>
-                        {stats.total > 0 ? Math.round((entry.count / stats.total) * 100) : 0}%
-                      </Text>
-                    </View>
-                  ))}
+              {stats.genres.length > 0 ? (
+                <View style={styles.donutRow}>
+                  <Donut
+                    size={130}
+                    strokeWidth={20}
+                    segments={stats.genres.map((entry) => ({
+                      value: entry.count,
+                      color: entry.color,
+                    }))}
+                    accessibilityLabel={`${t('stats.mostConsumedGenres')}: ${genresTotal} ${t('stats.items')}`}
+                  />
+                  <View style={styles.legend}>
+                    {stats.genres.map((entry) => (
+                      <View key={entry.name} style={styles.legendRow}>
+                        <View style={[styles.dot, { backgroundColor: entry.color }]} />
+                        <Text
+                          style={[styles.legendLabel, { color: c.text }]}
+                          numberOfLines={1}>
+                          {entry.name}
+                        </Text>
+                        <Text style={[styles.legendPercent, { color: c.textSecondary }]}>
+                          {genresTotal > 0 ? Math.round((entry.count / genresTotal) * 100) : 0}%
+                        </Text>
+                      </View>
+                    ))}
+                  </View>
                 </View>
-              </View>
+              ) : (
+                <View style={styles.donutRow}>
+                  <Donut
+                    size={130}
+                    strokeWidth={20}
+                    segments={stats.byType.map((entry) => ({
+                      value: entry.count,
+                      color: entry.color,
+                    }))}
+                    accessibilityLabel={t('stats.byTypeA11y', { count: stats.total })}
+                  />
+                  <View style={styles.legend}>
+                    {stats.byType.map((entry) => (
+                      <View key={entry.type} style={styles.legendRow}>
+                        <View style={[styles.dot, { backgroundColor: entry.color }]} />
+                        <Text
+                          style={[styles.legendLabel, { color: c.text }]}
+                          numberOfLines={1}>
+                          {t(`contentType.${entry.type}`)}
+                        </Text>
+                        <Text style={[styles.legendPercent, { color: c.textSecondary }]}>
+                          {stats.total > 0 ? Math.round((entry.count / stats.total) * 100) : 0}%
+                        </Text>
+                      </View>
+                    ))}
+                  </View>
+                </View>
+              )}
             </View>
           </>
         )}
